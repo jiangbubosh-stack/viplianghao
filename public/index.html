@@ -3,86 +3,103 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
-  <title>全国靓号选号系统</title>
-  <meta name="description" content="全国手机靓号选号系统，平台担保交易，无风险！" />
+  <title id="pageTitle">上海成霞通讯选号系统</title>
+  <meta name="description" content="上海成霞通讯选号系统 · 移动联通电信靓号 · 平台担保交易" />
   <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
-  <header class="site-header">
-    <div class="container">
-      <div class="logo"><span class="mark">靓</span> 全国靓号选号系统</div>
-      <nav class="header-nav">
-        <a href="#list">靓号大厅</a>
-        <a href="#search">精准选号</a>
-        <a class="admin-link" href="/admin">管理后台</a>
-      </nav>
-    </div>
+  <div class="app" id="top">
+  <!-- 头部（品牌名/客服入口由设置驱动） -->
+  <header class="app-header">
+    <div class="brand"><span class="brand-mark" id="brandMark">成</span><span id="siteName">上海成霞通讯选号系统</span></div>
+    <a class="kefu-btn" href="#service">客服</a>
   </header>
 
-  <section class="banner">
-    <h1>全国手机靓号 · 一站选齐</h1>
-    <p>平台担保交易 · 号码资源充足 · 极速交付</p>
-    <div class="badges">
-      <span class="badge">尾号4连</span>
-      <span class="badge">顺子号</span>
-      <span class="badge">对子号</span>
-      <span class="badge">循环号</span>
-      <span class="badge">含888/666</span>
+  <!-- Banner 轮播（有图用图，无图用默认渐变） -->
+  <div class="banner" id="banner">
+    <div class="banner-swiper" id="bannerSwiper"></div>
+    <div class="banner-dots" id="bannerDots"></div>
+  </div>
+
+  <!-- 滚动公告 -->
+  <div class="notice"><div class="notice-track" id="noticeTrack"></div></div>
+
+  <!-- 运营商入口 -->
+  <div class="entry-row" id="entryRow">
+    <a class="entry" data-op="移动" href="javascript:;"><div class="entry-ic">移</div><span>移动</span></a>
+    <a class="entry" data-op="联通" href="javascript:;"><div class="entry-ic">联</div><span>联通</span></a>
+    <a class="entry" data-op="电信" href="javascript:;"><div class="entry-ic">电</div><span>电信</span></a>
+    <a class="entry" data-op="虚拟运营商" href="javascript:;"><div class="entry-ic">虚</div><span>虚商</span></a>
+    <a class="entry" href="#service"><div class="entry-ic">服</div><span>客服</span></a>
+  </div>
+
+  <!-- 三大搜号 -->
+  <section class="search-card">
+    <div class="tabs" id="searchTabs">
+      <div class="tab active" data-mode="precise">精准搜号</div>
+      <div class="tab" data-mode="fuzzy">任性搜号</div>
+      <div class="tab" data-mode="tail">末位搜号</div>
+    </div>
+    <div class="search-pane" data-pane="precise">
+      <div class="digit-row" id="digitRow"></div>
+      <div class="search-actions">
+        <button class="btn primary" id="searchBtn">搜索靓号</button>
+        <button class="btn ghost" id="resetBtn">重置</button>
+      </div>
+      <div class="search-hint">在指定位置填数字，其余留空表示任意</div>
+    </div>
+    <div class="search-pane" data-pane="fuzzy" style="display:none">
+      <input class="big-input" id="fuzzyInput" placeholder="输入喜欢的数字，任意位置匹配" inputmode="numeric" />
+      <button class="btn primary" id="fuzzyBtn">搜索</button>
+    </div>
+    <div class="search-pane" data-pane="tail" style="display:none">
+      <input class="big-input" id="tailInput" placeholder="输入尾号数字，如 8888" inputmode="numeric" />
+      <button class="btn primary" id="tailBtn">搜索</button>
     </div>
   </section>
 
-  <div class="marquee" id="marquee">
-    <div class="track" id="marqueeTrack"><span>加载中…</span></div>
+  <!-- 筛选栏 -->
+  <div class="filter-bar" id="filterBar">
+    <button class="filter-chip" data-f="operator">运营商 ▾</button>
+    <button class="filter-chip" data-f="type">类型 ▾</button>
+    <button class="filter-chip" data-f="price">价格 ▾</button>
+    <button class="filter-chip" data-f="notin">不含 ▾</button>
+    <button class="filter-chip" data-f="sort">排序 ▾</button>
   </div>
+  <div class="filter-panel" id="filterPanel" style="display:none"></div>
 
-  <main class="container" id="search">
-    <section class="search-section">
-      <div class="search-title">🔍 精准选号（留空表示任意，支持通配 *）</div>
-      <div class="digit-row" id="digitRow"></div>
-      <div class="search-actions">
-        <button class="btn btn-primary" id="searchBtn">搜索靓号</button>
-        <button class="btn btn-ghost" id="resetBtn">重置</button>
-      </div>
-      <div class="search-hint">示例：第 4 位填 8、其余留空 → 匹配 “***8********”；或在框内直接输入部分号码 / 用 * 占位。</div>
-    </section>
+  <!-- 号码列表 -->
+  <div class="grid" id="grid">
+    <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+  </div>
+  <div class="pagination" id="pagination"></div>
 
-    <div class="filters">
-      <div class="filter-group" id="operatorFilter">
-        <span class="label">运营商</span>
-        <button class="chip active" data-operator="all">全部</button>
-        <button class="chip" data-operator="移动">移动</button>
-        <button class="chip" data-operator="联通">联通</button>
-        <button class="chip" data-operator="电信">电信</button>
-        <button class="chip" data-operator="虚拟运营商">虚拟运营商</button>
-      </div>
-      <div class="filter-group" id="levelFilter">
-        <span class="label">类型</span>
-        <button class="chip active" data-level="all">全部</button>
-        <button class="chip" data-level="靓号">靓号</button>
-        <button class="chip" data-level="普通">普通号</button>
-      </div>
-      <div class="filter-group" style="margin-left:auto;">
-        <span class="label">排序</span>
-        <select class="sort-select" id="sortSelect">
-          <option value="new">最新上架</option>
-          <option value="price_desc">价格高→低</option>
-          <option value="price_asc">价格低→高</option>
-        </select>
-      </div>
+  <!-- 客服区 -->
+  <section class="service-card" id="service">
+    <h3>联系客服</h3>
+    <div class="service-qr" id="serviceQrWrap" style="display:none"><img id="serviceQr" alt="客服二维码" /></div>
+    <div class="service-line">客服电话：<a id="servicePhone" href="tel:"></a></div>
+    <div class="service-line">微信号：<span id="serviceWechat"></span></div>
+    <div class="faq">
+      <div class="faq-title">常见问题</div>
+      <details><summary>如何选靓号？</summary><p>可在搜索框输入指定数字精准/任性/末位搜号，或按运营商、类型、价格筛选。</p></details>
+      <details><summary>如何保障权益？</summary><p>平台担保交易，号码实名制入网，售后无忧。</p></details>
+      <details><summary>如何办理开户？</summary><p>根据国家实名制要求，需本人持身份证办理，联系客服指导激活。</p></details>
     </div>
+  </section>
 
-    <div class="grid" id="grid">
-      <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
-    </div>
-
-    <div class="pagination" id="pagination"></div>
-  </main>
-
-  <footer class="site-footer">
-    <p>© 全国靓号选号系统 · 平台担保交易 · 客服微信：（请替换为您的微信号）</p>
-    <p style="margin-top:6px;opacity:.7">本页面仅作号码展示，交易请通过正规渠道。</p>
+  <footer class="app-footer">
+    <p id="footerName">上海成霞通讯选号系统</p>
+    <p class="sub">平台担保交易 · 号码资源充足 · 极速交付</p>
   </footer>
 
+  <!-- 底部导航 -->
+  <nav class="tabbar">
+    <a class="tabbar-item active" href="#top"><span class="tb-ic">⌂</span>首页</a>
+    <a class="tabbar-item" href="#service"><span class="tb-ic">✆</span>客服</a>
+  </nav>
+
   <script src="/js/public.js"></script>
+  </div>
 </body>
 </html>
