@@ -198,6 +198,59 @@ async function refresh() {
   await loadList();
 }
 
+// ---- 顶部 Tab：号码管理 / 站点设置 ----
+document.querySelectorAll('.admin-tabs .at').forEach((tab) => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.admin-tabs .at').forEach((t) => t.classList.remove('active'));
+    tab.classList.add('active');
+    const t = tab.dataset.tab;
+    $('#managePane').style.display = t === 'manage' ? 'block' : 'none';
+    $('#settingsPane').style.display = t === 'settings' ? 'block' : 'none';
+    if (t === 'settings') loadSettings();
+  });
+});
+
+// ---- 站点设置 ----
+const colorInput = $('#setThemeColor');
+const colorHex = $('#setThemeColorHex');
+colorInput.addEventListener('input', () => { colorHex.value = colorInput.value; });
+colorHex.addEventListener('input', () => {
+  if (/^#[0-9a-fA-F]{6}$/.test(colorHex.value)) colorInput.value = colorHex.value;
+});
+
+async function loadSettings() {
+  try {
+    const s = await (await fetch('/api/settings')).json();
+    $('#setSiteName').value = s.siteName || '';
+    $('#setLogoText').value = s.logoText || '';
+    const tc = s.themeColor || '#e4393c';
+    colorInput.value = /^#[0-9a-fA-F]{6}$/.test(tc) ? tc : '#e4393c';
+    colorHex.value = colorInput.value;
+    $('#setContactQrUrl').value = s.contactQrUrl || '';
+    $('#setContactPhone').value = s.contactPhone || '';
+    $('#setContactWechat').value = s.contactWechat || '';
+    $('#setBanners').value = (s.banners || []).join('\n');
+    $('#setNoticeText').value = (s.noticeText || '').split(/\r?\n/).join('\n');
+  } catch (e) { toast('读取设置失败', 'err'); }
+}
+
+$('#saveSettingsBtn').addEventListener('click', async () => {
+  const payload = {
+    siteName: $('#setSiteName').value.trim(),
+    logoText: $('#setLogoText').value.trim(),
+    themeColor: colorHex.value.trim(),
+    contactQrUrl: $('#setContactQrUrl').value.trim(),
+    contactPhone: $('#setContactPhone').value.trim(),
+    contactWechat: $('#setContactWechat').value.trim(),
+    banners: $('#setBanners').value.trim(),
+    noticeText: $('#setNoticeText').value.trim(),
+  };
+  try {
+    await api('/api/admin/settings', { method: 'POST', body: JSON.stringify(payload) });
+    toast('站点设置已保存，前台实时生效', 'ok');
+  } catch (e) { toast(e.message, 'err'); }
+});
+
 // ---- Init ----
 if (token) {
   // verify token works
