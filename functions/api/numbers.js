@@ -19,6 +19,7 @@ export async function onRequestGet({ request, env }) {
       isHot: url.searchParams.get('isHot') || 'all',
       isRecommend: url.searchParams.get('isRecommend') || 'all',
       isSpecial: url.searchParams.get('isSpecial') || 'all',
+      isFengshui: url.searchParams.get('fengshui') || url.searchParams.get('isFengshui') || 'all',
       minPrice: url.searchParams.get('minPrice') || '',
       maxPrice: url.searchParams.get('maxPrice') || '',
       notIn: url.searchParams.get('notIn') || '',
