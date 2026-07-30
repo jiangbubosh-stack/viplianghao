@@ -6,6 +6,19 @@
 // 默认后台密码（生产环境务必通过 Cloudflare 变量 ADMIN_PASSWORD 覆盖）
 export const DEFAULT_ADMIN_PASSWORD = 'admin888';
 const KV_KEY = 'numbers';
+const SETTINGS_KEY = 'settings';
+
+// 站点设置默认值（后台「站点设置」可覆盖：主题色/客服/Banner/公告等）
+export const DEFAULT_SETTINGS = {
+  siteName: '上海成霞通讯选号系统',
+  logoText: '成',
+  contactQrUrl: '',     // 客服微信二维码图片 URL
+  contactPhone: '',     // 客服电话
+  contactWechat: '',    // 客服微信号
+  banners: [],          // Banner 轮播图 URL 数组，空则用默认渐变 Banner
+  themeColor: '#e4393c',// 主题色（注入 CSS 变量 --theme）
+  noticeText: '平台担保交易，安全无忧', // 滚动公告，多条用换行分隔
+};
 
 // ---- 响应助手 ----
 export function json(data, status = 200, headers = {}) {
@@ -100,6 +113,29 @@ export function genId() {
   return 'n_' + u.replace(/-/g, '').slice(0, 12);
 }
 
+// ---- 站点设置读写 ----
+export async function getSettings(env) {
+  const kv = env && env.NUMBERS_KV;
+  if (!kv) return { ...DEFAULT_SETTINGS };
+  const raw = await kv.get(SETTINGS_KEY);
+  if (!raw) return { ...DEFAULT_SETTINGS };
+  try {
+    const obj = JSON.parse(raw);
+    return { ...DEFAULT_SETTINGS, ...obj };
+  } catch {
+    return { ...DEFAULT_SETTINGS };
+  }
+}
+
+export async function saveSettings(env, patch) {
+  const kv = env && env.NUMBERS_KV;
+  if (!kv) throw new Error('KV_NOT_BOUND');
+  const cur = await getSettings(env);
+  const next = { ...cur, ...patch };
+  await kv.put(SETTINGS_KEY, JSON.stringify(next));
+  return next;
+}
+
 // ---- KV 存储（整个数组存一个 key；KV 跨部署持久，不会因重部署丢失）----
 export async function readAll(env) {
   const kv = env && env.NUMBERS_KV;
@@ -185,7 +221,7 @@ export async function seedIfEmpty(env) {
 
 // ---- 业务方法（与 server.js 对齐）----
 export const service = {
-  async list(env, { q, operator, level, status, page = 1, pageSize = 24, sort = 'new' }) {
+  async list(env, { q, operator, level, status, tag, minPrice, maxPrice, notIn, page = 1, pageSize = 24, sort = 'new' }) {
     let items = await readAll(env);
     if (q) {
       const pattern = q.replace(/\*/g, '.*');
@@ -194,7 +230,14 @@ export const service = {
     }
     if (operator && operator !== 'all') items = items.filter((it) => it.operator === operator);
     if (level && level !== 'all') items = items.filter((it) => it.level === level);
+    if (tag && tag !== 'all') items = items.filter((it) => it.tag === tag || it.level === tag);
     if (status && status !== 'all') items = items.filter((it) => it.status === status);
+    if (minPrice != null && minPrice !== '' && !isNaN(Number(minPrice))) items = items.filter((it) => (it.price || 0) >= Number(minPrice));
+    if (maxPrice != null && maxPrice !== '' && !isNaN(Number(maxPrice))) items = items.filter((it) => (it.price || 0) <= Number(maxPrice));
+    if (notIn) {
+      const banned = String(notIn).split(',').map((s) => s.trim()).filter(Boolean);
+      if (banned.length) items = items.filter((it) => !banned.some((d) => it.number.includes(d)));
+    }
 
     if (sort === 'price_desc') items = items.slice().sort((a, b) => (b.price || 0) - (a.price || 0));
     else if (sort === 'price_asc') items = items.slice().sort((a, b) => (a.price || 0) - (b.price || 0));
