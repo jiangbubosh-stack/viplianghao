@@ -217,18 +217,25 @@ function renderCards(items) {
   grid.innerHTML = items.map((it) => {
     const premium = it.level === '靓号';
     const star = premium ? '<span class="star">★</span>' : '';
+    const badges = [
+      it.isHot && '<span class="badge hot">热</span>',
+      it.isRecommend && '<span class="badge rec">荐</span>',
+      it.isSpecial && '<span class="badge spe">特</span>',
+    ].filter(Boolean).join('');
+    const sold = it.isSold || it.status === 'sold';
     return `
-      <div class="card ${premium ? 'premium' : ''}">
+      <a class="card ${premium ? 'premium' : ''} ${sold ? 'sold' : ''}" href="/detail?id=${encodeURIComponent(it.id)}">
         <div class="num">${star}${it.number}</div>
         <div class="meta">
-          <span class="tag op">${it.operator}</span>
-          <span class="tag level">${it.tag}</span>
+          <span class="tag op">${it.operator || ''}</span>
+          <span class="tag level">${it.tag || ''}</span>
+          ${badges}
         </div>
         <div class="footer">
           <div class="price"><small>¥</small>${it.price || '面议'}</div>
-          <span class="status ${it.status === 'available' ? 'available' : 'sold'}">${it.status === 'available' ? '可售' : '已售'}</span>
+          <span class="status ${sold ? 'sold' : 'available'}">${sold ? '已售' : '可售'}</span>
         </div>
-      </div>`;
+      </a>`;
   }).join('');
 }
 
