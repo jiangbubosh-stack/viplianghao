@@ -3,167 +3,353 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>靓号管理后台</title>
+  <title>上海靓号中心 · 管理系统</title>
   <link rel="stylesheet" href="/css/style.css" />
 </head>
-<body>
-  <header class="site-header">
-    <div class="container">
-      <div class="logo"><span class="mark">管</span> 靓号管理后台</div>
-      <nav class="header-nav">
-        <a href="/">返回前台</a>
-      </nav>
-    </div>
-  </header>
+<body class="admin-body">
 
-  <!-- Login -->
-  <div class="auth-wrap" id="loginView">
-    <div class="auth-card">
-      <h2>管理员登录</h2>
-      <p class="sub">请输入后台密码以继续</p>
-      <div class="field">
-        <label for="pwd">密码</label>
-        <input type="password" id="pwd" placeholder="请输入密码" autocomplete="current-password" />
-      </div>
-      <button class="btn btn-primary" style="width:100%" id="loginBtn">登录</button>
-      <p class="sub" style="margin-top:14px;font-size:12px" id="loginErr"></p>
+<!-- 登录视图 -->
+<div class="auth-wrap" id="loginView">
+  <div class="auth-card">
+    <h2>管理员登录</h2>
+    <p class="sub">请输入后台密码以继续</p>
+    <div class="field">
+      <label for="pwd">密码</label>
+      <input type="password" id="pwd" placeholder="请输入密码" autocomplete="current-password" />
     </div>
+    <button class="btn btn-primary" style="width:100%" id="loginBtn">登录</button>
+    <p class="sub" style="margin-top:14px;font-size:12px" id="loginErr"></p>
   </div>
+</div>
 
-  <!-- Dashboard -->
-  <main class="container" id="dashView" style="display:none; padding:20px 16px 50px;">
-    <div class="admin-topbar">
-      <div class="who">欢迎，管理员 <button class="btn btn-ghost btn-sm" id="logoutBtn" style="margin-left:10px">退出</button></div>
-      <a class="btn btn-ghost btn-sm" href="/">查看前台</a>
-    </div>
+<!-- 主体框架 -->
+<div class="admin-shell" id="dashView" style="display:none">
 
-    <div class="admin-tabs">
-      <div class="at active" data-tab="manage">号码管理</div>
-      <div class="at" data-tab="settings">站点设置</div>
-    </div>
+  <!-- 左侧栏 -->
+  <aside class="admin-sidebar">
+    <div class="sb-brand">上海靓号中心</div>
+    <nav class="sb-nav">
+      <div class="sb-item" data-route="home"><span class="sb-ic">⌂</span>我的桌面</div>
 
-    <div id="managePane">
-    <div class="stat-row" id="statRow"></div>
+      <div class="sb-group" data-group="company">
+        <div class="sb-item sb-parent"><span class="sb-ic">🏢</span>公司管理<span class="sb-arrow">▸</span></div>
+        <div class="sb-sub">
+          <div class="sb-item sb-child" data-route="company">公司信息</div>
+        </div>
+      </div>
 
-    <div class="admin-layout">
-      <!-- Upload panel -->
-      <section class="panel">
-        <h3>📥 上传号码</h3>
-        <div class="tabs">
-          <div class="tab active" data-tab="file">文件上传</div>
-          <div class="tab" data-tab="paste">粘贴文本</div>
-          <div class="tab" data-tab="single">单个添加</div>
+      <div class="sb-group open" data-group="numbers">
+        <div class="sb-item sb-parent"><span class="sb-ic">📱</span>号码管理<span class="sb-arrow">▾</span></div>
+        <div class="sb-sub">
+          <div class="sb-item sb-child active" data-route="numbers-ziyou">自有号码</div>
+          <div class="sb-item sb-child" data-route="numbers-gonggong">公共号池</div>
+        </div>
+      </div>
+
+      <div class="sb-item" data-route="orders"><span class="sb-ic">📑</span>订单管理</div>
+      <div class="sb-item" data-route="promo"><span class="sb-ic">📣</span>推广管理</div>
+      <div class="sb-item" data-route="finance"><span class="sb-ic">💰</span>财务管理</div>
+      <div class="sb-item" data-route="marketing"><span class="sb-ic">🛠</span>营销工具</div>
+
+      <div class="sb-group" data-group="system">
+        <div class="sb-item sb-parent"><span class="sb-ic">⚙</span>系统配置<span class="sb-arrow">▸</span></div>
+        <div class="sb-sub">
+          <div class="sb-item sb-child" data-route="settings">站点设置</div>
+          <div class="sb-item sb-child" data-route="banner">首页 banner</div>
+          <div class="sb-item sb-child" data-route="nav">首页导航</div>
+          <div class="sb-item sb-child" data-route="middlead">中部广告</div>
+          <div class="sb-item sb-child" data-route="bottomnav">底部菜单</div>
+          <div class="sb-item sb-child" data-route="poster">海报管理</div>
+          <div class="sb-item sb-child" data-route="share">分享管理</div>
+        </div>
+      </div>
+
+      <div class="sb-item" data-route="profile"><span class="sb-ic">👤</span>个人信息</div>
+      <div class="sb-item" data-route="complaint"><span class="sb-ic">💬</span>投诉建议</div>
+    </nav>
+  </aside>
+
+  <!-- 右侧主区 -->
+  <main class="admin-main">
+    <!-- 顶部条 -->
+    <header class="admin-top">
+      <div class="top-breadcrumb" id="topBreadcrumb">
+        <span>🏠 我的桌面</span>
+      </div>
+      <div class="top-user">
+        <span>未完成 ▾</span>
+        <a class="btn btn-ghost btn-sm" href="/">查看前台</a>
+        <button class="btn btn-ghost btn-sm" id="logoutBtn">退出</button>
+      </div>
+    </header>
+
+    <!-- 路由出口 -->
+    <section class="admin-view" id="adminView">
+
+      <!-- ============== 我的桌面（数据统计） ============== -->
+      <div class="view view-home" data-view="home">
+        <div class="welcome-card">
+          <div class="wc-bar"></div>
+          <div class="wc-text">欢迎：<b style="color:#e4393c">宋先成1</b> 2026-07-30</div>
         </div>
 
-        <!-- File -->
-        <div class="tab-pane" data-pane="file">
-          <div class="file-drop" id="fileDrop">
-            点击选择 .txt / .csv 文件<br/>每行一个号码，或用逗号分隔：号码,运营商,类型,标签,价格
+        <h3 class="block-title">数据统计</h3>
+        <div class="stat-grid" id="statGrid"></div>
+
+        <div class="chart-row">
+          <div class="chart-card">
+            <h4>平台交易金额趋势</h4>
+            <div class="chart-body" id="chartMoney"></div>
           </div>
-          <input type="file" id="fileInput" accept=".txt,.csv,.text" style="display:none" />
-          <p class="sub" style="font-size:12px;margin-top:10px" id="fileInfo"></p>
-          <button class="btn btn-primary" style="width:100%;margin-top:10px" id="uploadFileBtn">上传并导入</button>
+          <div class="chart-card">
+            <h4>平台总浏览量</h4>
+            <div class="chart-body" id="chartView"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============== 号码管理 ============== -->
+      <div class="view view-numbers" data-view="numbers" style="display:none">
+        <div class="toolbar">
+          <input class="tb-input" id="fNumber" placeholder="请输入手机号" />
+          <input class="tb-input" id="fPrefix" placeholder="请输入号码(前7位)" />
+          <select class="tb-sel" id="fProvince"><option value="all">全国</option></select>
+          <select class="tb-sel" id="fCity"><option value="all">全省</option></select>
+          <select class="tb-sel" id="fOperator">
+            <option value="all">运营商</option>
+            <option value="移动">移动</option>
+            <option value="联通">联通</option>
+            <option value="电信">电信</option>
+            <option value="虚拟运营商">虚拟运营商</option>
+          </select>
+          <select class="tb-sel" id="fBrand"><option value="all">所有品牌</option></select>
+          <select class="tb-sel" id="fLevel">
+            <option value="all">连通级别</option>
+            <option value="靓号">靓号</option>
+            <option value="普通号">普通号</option>
+          </select>
+          <select class="tb-sel" id="fRule"><option value="all">所有规则</option>
+            <option>尾号4连</option><option>尾号3连</option>
+            <option>对子号</option><option>循环号</option>
+            <option>顺子号</option><option>倒顺号</option>
+            <option>含888</option><option>含666</option>
+            <option>普通号</option>
+          </select>
+          <select class="tb-sel" id="fSource"><option value="all">所有来源</option><option>自有</option><option>公共</option></select>
+          <select class="tb-sel" id="fOnShelf"><option value="all">状态</option><option value="on">上架</option><option value="off">下架</option></select>
+          <select class="tb-sel" id="fIsSold"><option value="all">是否已售</option><option value="sold">已售</option><option value="on">在售</option></select>
+          <button class="tb-btn primary" id="fSearch">🔍</button>
         </div>
 
-        <!-- Paste -->
-        <div class="tab-pane" data-pane="paste" style="display:none">
-          <div class="field">
-            <label for="pasteArea">号码列表（每行一个；可用逗号分隔字段）</label>
-            <textarea id="pasteArea" placeholder="17088880999&#10;13166668888,联通&#10;18612345678,移动,靓号,顺子号,2000"></textarea>
-          </div>
-          <button class="btn btn-primary" style="width:100%" id="uploadPasteBtn">导入文本</button>
+        <div class="bulk-bar">
+          <button class="bulk-btn" data-act="add">➕ 单个添加</button>
+          <button class="bulk-btn" data-act="import">📥 批量导入</button>
+          <button class="bulk-btn" data-act="export">📊 报表导出</button>
+          <button class="bulk-btn" data-act="export-all">📦 一键导出所有</button>
+          <span class="bulk-sep">|</span>
+          <button class="bulk-btn green" data-act="onShelf">✅ 批量上架</button>
+          <button class="bulk-btn" data-act="offShelf">🚫 批量下架</button>
+          <button class="bulk-btn orange" data-act="recommend">👍 批量推荐</button>
+          <button class="bulk-btn orange" data-act="special">🎁 批量特价</button>
+          <button class="bulk-btn red" data-act="hot">🔥 批量热门</button>
+          <button class="bulk-btn red" data-act="clearTags">🧹 批量清除</button>
+          <button class="bulk-btn red" data-act="clearGonggong">🗑 一键清空公共</button>
+          <button class="bulk-btn red" data-act="clearZiyou">🗑 一键清空自有</button>
+          <button class="bulk-btn blue" data-act="protect">🛡 指定号码保护</button>
         </div>
 
-        <!-- Single -->
-        <div class="tab-pane" data-pane="single" style="display:none">
-          <div class="field">
-            <label for="sNumber">手机号</label>
-            <input id="sNumber" placeholder="11位手机号" inputmode="numeric" />
-          </div>
-          <div class="field">
-            <label for="sOperator">运营商</label>
-            <select id="sOperator">
-              <option value="auto">自动识别</option>
-              <option value="移动">移动</option>
-              <option value="联通">联通</option>
-              <option value="电信">电信</option>
-              <option value="虚拟运营商">虚拟运营商</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="sTag">标签（可选）</label>
-            <input id="sTag" placeholder="如：尾号8888" />
-          </div>
-          <div class="field">
-            <label for="sPrice">价格（元，可选）</label>
-            <input id="sPrice" placeholder="0" inputmode="decimal" />
-          </div>
-          <button class="btn btn-primary" style="width:100%" id="addSingleBtn">添加号码</button>
-        </div>
-      </section>
-
-      <!-- List -->
-      <section class="panel">
-        <h3>📋 号码列表 <span class="count" id="listCount"></span></h3>
-        <div style="overflow-x:auto">
-          <table class="admin-table">
+        <div class="table-wrap">
+          <table class="admin-table admin-table-2" id="numTable">
             <thead>
-              <tr><th>号码</th><th>运营商</th><th>标签</th><th>价格</th><th>状态</th><th></th></tr>
+              <tr>
+                <th class="cb"><input type="checkbox" id="cbAll" /></th>
+                <th>手机号码</th>
+                <th>省/市</th>
+                <th>品牌</th>
+                <th>运营商</th>
+                <th>底价</th>
+                <th>优惠后价格</th>
+                <th>分期比(%)</th>
+                <th>推荐级别</th>
+                <th>号码规则</th>
+                <th>号码来源</th>
+                <th>状态</th>
+                <th>是否已售</th>
+                <th>操作</th>
+              </tr>
             </thead>
             <tbody id="listBody"></tbody>
           </table>
         </div>
-        <div class="pagination" id="adminPagination" style="margin:14px 0 0"></div>
-      </section>
-    </div>
-    </div><!-- /managePane -->
 
-    <div id="settingsPane" style="display:none">
-      <div class="panel">
-        <h3>🎨 站点设置 <span class="count">保存后前台实时生效</span></h3>
-        <div class="field">
-          <label for="setSiteName">站点名称</label>
-          <input id="setSiteName" placeholder="上海成霞通讯选号系统" />
-        </div>
-        <div class="field">
-          <label for="setLogoText">Logo 文字（头部方块，建议 1 字）</label>
-          <input id="setLogoText" maxlength="2" placeholder="成" />
-        </div>
-        <div class="field">
-          <label for="setThemeColor">主题色</label>
-          <div class="color-row">
-            <input type="color" id="setThemeColor" value="#e4393c" />
-            <input id="setThemeColorHex" placeholder="#e4393c" style="flex:1" />
+        <div class="pager" id="pager"></div>
+      </div>
+
+      <!-- ============== 站点设置 ============== -->
+      <div class="view view-settings" data-view="settings" style="display:none">
+        <div class="panel">
+          <h3>🎨 站点设置 <span class="count">保存后前台实时生效</span></h3>
+          <div class="form-grid">
+            <div class="field">
+              <label>站点名称</label>
+              <input id="setSiteName" />
+            </div>
+            <div class="field">
+              <label>Logo 文字（1-2 字）</label>
+              <input id="setLogoText" maxlength="2" />
+            </div>
+            <div class="field">
+              <label>主题色</label>
+              <div class="color-row">
+                <input type="color" id="setThemeColor" value="#e4393c" />
+                <input id="setThemeColorHex" style="flex:1" />
+              </div>
+            </div>
+            <div class="field">
+              <label>客服电话</label>
+              <input id="setContactPhone" inputmode="tel" />
+            </div>
+            <div class="field">
+              <label>客服微信号</label>
+              <input id="setContactWechat" />
+            </div>
+            <div class="field full">
+              <label>客服二维码图片 URL</label>
+              <input id="setContactQrUrl" placeholder="https://.../qr.png" />
+            </div>
+            <div class="field full">
+              <label>Banner 轮播图（每行一个图片 URL，留空用默认渐变）</label>
+              <textarea id="setBanners" placeholder="https://.../b1.jpg"></textarea>
+            </div>
+            <div class="field full">
+              <label>滚动公告（每行一条）</label>
+              <textarea id="setNoticeText"></textarea>
+            </div>
           </div>
+          <button class="btn btn-primary" id="saveSettingsBtn">保存设置</button>
         </div>
-        <div class="field">
-          <label for="setContactQrUrl">客服二维码图片 URL</label>
-          <input id="setContactQrUrl" placeholder="https://.../qr.png" />
+      </div>
+
+      <!-- 占位：其它模块 -->
+      <div class="view view-placeholder" data-view="orders" style="display:none">
+        <div class="placeholder-card">📑 订单管理（下一期开发）</div>
+      </div>
+      <div class="view view-placeholder" data-view="promo" style="display:none">
+        <div class="placeholder-card">📣 推广管理（下一期开发）</div>
+      </div>
+      <div class="view view-placeholder" data-view="finance" style="display:none">
+        <div class="placeholder-card">💰 财务管理（下一期开发）</div>
+      </div>
+      <div class="view view-placeholder" data-view="marketing" style="display:none">
+        <div class="placeholder-card">🛠 营销工具（下一期开发）</div>
+      </div>
+      <div class="view view-placeholder" data-view="company" style="display:none">
+        <div class="placeholder-card">🏢 公司管理（下一期开发）</div>
+      </div>
+      <div class="view view-placeholder" data-view="profile" style="display:none">
+        <div class="placeholder-card">👤 个人信息（下一期开发）</div>
+      </div>
+      <div class="view view-placeholder" data-view="complaint" style="display:none">
+        <div class="placeholder-card">💬 投诉建议（下一期开发）</div>
+      </div>
+      <div class="view view-placeholder" data-view="banner" style="display:none">
+        <div class="placeholder-card">🖼 首页 banner 管理（站点设置已覆盖）</div>
+      </div>
+      <div class="view view-placeholder" data-view="nav" style="display:none">
+        <div class="placeholder-card">🧭 首页导航管理（下一期开发）</div>
+      </div>
+      <div class="view view-placeholder" data-view="middlead" style="display:none">
+        <div class="placeholder-card">📢 中部广告管理（下一期开发）</div>
+      </div>
+      <div class="view view-placeholder" data-view="bottomnav" style="display:none">
+        <div class="placeholder-card">📌 底部菜单管理（下一期开发）</div>
+      </div>
+      <div class="view view-placeholder" data-view="poster" style="display:none">
+        <div class="placeholder-card">🎨 海报管理（下一期开发）</div>
+      </div>
+      <div class="view view-placeholder" data-view="share" style="display:none">
+        <div class="placeholder-card">🔗 分享管理（下一期开发）</div>
+      </div>
+
+    </section>
+  </main>
+</div>
+
+<!-- 单条添加 / 编辑 弹窗 -->
+<div class="modal" id="numberModal" style="display:none">
+  <div class="modal-card">
+    <div class="modal-head">
+      <span id="modalTitle">添加号码</span>
+      <button class="modal-close" data-close>×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="field"><label>手机号 *</label><input id="mNumber" inputmode="numeric" /></div>
+        <div class="field"><label>运营商</label>
+          <select id="mOperator">
+            <option value="auto">自动识别</option>
+            <option>移动</option><option>联通</option><option>电信</option><option>虚拟运营商</option>
+          </select>
         </div>
-        <div class="field">
-          <label for="setContactPhone">客服电话</label>
-          <input id="setContactPhone" placeholder="如 15316666627" inputmode="tel" />
+        <div class="field"><label>底价（元）</label><input id="mPrice" inputmode="decimal" /></div>
+        <div class="field"><label>优惠后价格（元）</label><input id="mOrig" inputmode="decimal" placeholder="留空=无划线价" /></div>
+        <div class="field"><label>号码来源</label>
+          <select id="mSource"><option>自有</option><option>公共</option></select>
         </div>
-        <div class="field">
-          <label for="setContactWechat">客服微信号</label>
-          <input id="setContactWechat" placeholder="如 chengxia_tx" />
+        <div class="field"><label>推荐级别</label>
+          <select id="mRec">
+            <option value="">无</option><option>热门</option><option>推荐</option><option>特价</option>
+          </select>
         </div>
-        <div class="field">
-          <label for="setBanners">Banner 轮播图（每行一个图片 URL，留空用默认渐变）</label>
-          <textarea id="setBanners" placeholder="https://.../banner1.jpg&#10;https://.../banner2.jpg"></textarea>
+        <div class="field"><label>品牌（运营商品牌）</label><input id="mBrand" placeholder="留空自动" /></div>
+        <div class="field"><label>号码规则/标签</label><input id="mTag" placeholder="留空自动" /></div>
+        <div class="field full"><label>套餐详情</label><textarea id="mPkg" rows="3" placeholder="如：低消69，含60分钟+15G流量"></textarea></div>
+        <div class="field full flags">
+          <label class="ck"><input type="checkbox" id="mOnShelf" checked /> 上架</label>
+          <label class="ck"><input type="checkbox" id="mIsSold" /> 已售</label>
+          <label class="ck"><input type="checkbox" id="mIsHot" /> 热门</label>
+          <label class="ck"><input type="checkbox" id="mIsRec" /> 推荐</label>
+          <label class="ck"><input type="checkbox" id="mIsSpe" /> 特价</label>
         </div>
-        <div class="field">
-          <label for="setNoticeText">滚动公告（每行一条，前台横向滚动）</label>
-          <textarea id="setNoticeText" placeholder="平台担保交易，安全无忧&#10;恭喜客户成功办理 178****8888"></textarea>
-        </div>
-        <button class="btn btn-primary" style="width:100%" id="saveSettingsBtn">保存设置</button>
-        <p class="hint">提示：Banner / 二维码需填公网可访问的图片地址；主题色同时影响前台主色与按钮。</p>
       </div>
     </div>
-  </main>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" data-close>取消</button>
+      <button class="btn btn-primary" id="mSave">保存</button>
+    </div>
+  </div>
+</div>
 
-  <div class="toast" id="toast"></div>
+<!-- 批量导入弹窗 -->
+<div class="modal" id="importModal" style="display:none">
+  <div class="modal-card">
+    <div class="modal-head">
+      <span>批量导入</span>
+      <button class="modal-close" data-close>×</button>
+    </div>
+    <div class="modal-body">
+      <p class="hint" style="margin-top:0">每行一条；可用 <code>,</code> / <code>;</code> / <code>，</code> 分隔多个字段（顺序见提示）。</p>
+      <div class="field">
+        <label>从文件选择（.txt / .csv）</label>
+        <input type="file" id="impFile" accept=".txt,.csv" />
+      </div>
+      <div class="field">
+        <label>或直接粘贴文本</label>
+        <textarea id="impText" rows="8" placeholder="17088880999,虚拟运营商,远特通信,北京,北京,靓号,尾号4连,8800,12000,低消69...,0,自有,热门"></textarea>
+      </div>
+      <details class="hint">
+        <summary>列顺序说明（点击展开）</summary>
+        <p>1 手机号 / 2 运营商 / 3 品牌 / 4 省 / 5 市 / 6 等级 / 7 标签 / 8 价格 / 9 原价 / 10 套餐详情 / 11 分期比% / 12 来源 / 13 推荐级别 / 14 热门1/0 / 15 推荐1/0 / 16 特价1/0</p>
+      </details>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" data-close>取消</button>
+      <button class="btn btn-primary" id="impSubmit">开始导入</button>
+    </div>
+  </div>
+</div>
 
-  <script src="/js/admin.js"></script>
+<div class="toast" id="toast"></div>
+<script src="/js/admin.js"></script>
 </body>
 </html>
