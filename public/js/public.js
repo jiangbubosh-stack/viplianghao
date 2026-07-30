@@ -47,6 +47,8 @@ async function applySettings() {
     if (s.contactQrUrl) { $('#serviceQr').src = s.contactQrUrl; $('#serviceQrWrap').style.display = 'block'; }
     if (s.contactPhone) { const a = $('#servicePhone'); a.href = 'tel:' + s.contactPhone; a.textContent = s.contactPhone; }
     if (s.contactWechat) $('#serviceWechat').textContent = s.contactWechat;
+    // 风水号联系微信
+    if (s.fengshuiWechat) { const fw = $('#fsWechat'); if (fw) fw.textContent = s.fengshuiWechat; }
   } catch (e) { /* 用默认值兜底 */ }
 }
 
@@ -208,8 +210,8 @@ function syncChipActive() {
 }
 
 // ---------- 渲染列表 ----------
-function renderCards(items) {
-  const grid = $('#grid');
+function renderCards(items, targetSel = '#grid') {
+  const grid = $(targetSel);
   if (!items.length) {
     grid.innerHTML = '<div class="empty"><div class="big">📭</div>没有找到匹配的号码，换个条件试试～</div>';
     return;
@@ -218,6 +220,7 @@ function renderCards(items) {
     const premium = it.level === '靓号';
     const star = premium ? '<span class="star">★</span>' : '';
     const badges = [
+      it.isFengshui && '<span class="badge fs">风水</span>',
       it.isHot && '<span class="badge hot">热</span>',
       it.isRecommend && '<span class="badge rec">荐</span>',
       it.isSpecial && '<span class="badge spe">特</span>',
@@ -269,6 +272,7 @@ async function load() {
     q: state.q, operator: state.operator, level: state.level,
     minPrice: state.minPrice, maxPrice: state.maxPrice, notIn: state.notIn,
     sort: state.sort, page: state.page, pageSize: state.pageSize,
+    fengshui: 'no', // 主列表不含风水号，风水号仅在专属专区展示
   });
   try {
     const res = await fetch('/api/numbers?' + params.toString());
@@ -281,6 +285,32 @@ async function load() {
   }
 }
 
+// ---------- 风水号专区 ----------
+$('#fsCopyBtn')?.addEventListener('click', () => {
+  const num = ($('#fsWechat')?.textContent || '').trim();
+  const btn = $('#fsCopyBtn');
+  const done = () => { if (btn) { const t = btn.textContent; btn.textContent = '已复制'; setTimeout(() => (btn.textContent = t), 1500); } };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(num).then(done).catch(done);
+  } else {
+    const ta = document.createElement('textarea'); ta.value = num; document.body.appendChild(ta);
+    ta.select(); try { document.execCommand('copy'); } catch (e) {} document.body.removeChild(ta); done();
+  }
+});
+
+async function loadFengshui() {
+  const grid = $('#fsGrid');
+  if (!grid) return;
+  grid.innerHTML = '<div class="skeleton"></div><div class="skeleton"></div>';
+  try {
+    const res = await fetch('/api/numbers?fengshui=yes&pageSize=12&sort=new');
+    const json = await res.json();
+    renderCards(json.data || [], '#fsGrid');
+  } catch (e) {
+    grid.innerHTML = '<div class="empty"><div class="big">⚠️</div>风水号加载失败，请稍后重试</div>';
+  }
+}
+
 // ---------- 底部导航 ----------
 document.querySelectorAll('.tabbar-item').forEach((t) => t.addEventListener('click', () => {
   document.querySelectorAll('.tabbar-item').forEach((x) => x.classList.remove('active'));
@@ -290,10 +320,11 @@ document.querySelectorAll('.tabbar-item').forEach((t) => t.addEventListener('cli
 // ---------- 初始化 ----------
 applySettings();
 load();
+loadFengshui();
 // 实时刷新：列表 20s，设置 30s（避免打断输入）
 setInterval(() => {
   const a = document.activeElement;
   if (a && a.tagName === 'INPUT') return;
   load();
 }, 20000);
-setInterval(() => { applySettings(); }, 30000);
+setInterval(() => { applySettings(); loadFengshui(); }, 30000);
