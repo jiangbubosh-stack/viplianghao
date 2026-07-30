@@ -20,6 +20,7 @@ export async function onRequestGet({ request, env }) {
       isHot: url.searchParams.get('isHot') || 'all',
       isRecommend: url.searchParams.get('isRecommend') || 'all',
       isSpecial: url.searchParams.get('isSpecial') || 'all',
+      isFengshui: url.searchParams.get('fengshui') || url.searchParams.get('isFengshui') || 'all',
       sort: url.searchParams.get('sort') || 'new',
       page: url.searchParams.get('page') || 1,
       pageSize: url.searchParams.get('pageSize') || 20,
