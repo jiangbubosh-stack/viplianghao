@@ -18,6 +18,7 @@ export const DEFAULT_SETTINGS = {
   banners: [],          // Banner 轮播图 URL 数组，空则用默认渐变 Banner
   themeColor: '#e4393c',// 主题色（注入 CSS 变量 --theme）
   noticeText: '平台担保交易，安全无忧', // 滚动公告，多条用换行分隔
+  fengshuiWechat: '15316666627', // 风水号专区联系微信号（前台 banner 展示）
 };
 
 // ---- 响应助手 ----
@@ -178,6 +179,7 @@ export function backfillNumber(it) {
     onShelf: it.onShelf !== false,
     isSold: Boolean(it.isSold),
     status: it.status || (it.onShelf === false ? 'offline' : (it.isSold ? 'sold' : 'available')),
+    isFengshui: Boolean(it.isFengshui),
     createdAt: it.createdAt || new Date().toISOString(),
   };
 }
@@ -421,7 +423,7 @@ export const service = {
   async list(env, {
     q, operator, level, status, tag,
     minPrice, maxPrice, notIn, brand, province, city, source, recommendLevel,
-    onShelf, isSold, isHot, isRecommend, isSpecial,
+    onShelf, isSold, isHot, isRecommend, isSpecial, isFengshui,
     page = 1, pageSize = 24, sort = 'new',
   }) {
     let items = await readAll(env);
@@ -444,6 +446,7 @@ export const service = {
     if (isHot && isHot !== 'all') items = items.filter((it) => Boolean(it.isHot) === (isHot === 'hot'));
     if (isRecommend && isRecommend !== 'all') items = items.filter((it) => Boolean(it.isRecommend) === (isRecommend === 'rec'));
     if (isSpecial && isSpecial !== 'all') items = items.filter((it) => Boolean(it.isSpecial) === (isSpecial === 'spe'));
+    if (isFengshui && isFengshui !== 'all') items = items.filter((it) => Boolean(it.isFengshui) === (isFengshui === 'yes'));
     if (minPrice != null && minPrice !== '' && !isNaN(Number(minPrice))) items = items.filter((it) => (it.price || 0) >= Number(minPrice));
     if (maxPrice != null && maxPrice !== '' && !isNaN(Number(maxPrice))) items = items.filter((it) => (it.price || 0) <= Number(maxPrice));
     if (notIn) {
@@ -517,6 +520,7 @@ export const service = {
       onShelf: input.onShelf !== false,
       isSold: Boolean(input.isSold),
       status: input.status || 'available',
+      isFengshui: Boolean(input.isFengshui),
       createdAt: new Date().toISOString(),
     };
     items.push(entry);
@@ -536,7 +540,7 @@ export const service = {
     for (const k of ['price', 'originalPrice', 'installment']) {
       if (patch[k] != null && !isNaN(Number(patch[k]))) next[k] = Number(patch[k]);
     }
-    for (const k of ['isHot', 'isRecommend', 'isSpecial', 'isSold']) {
+    for (const k of ['isHot', 'isRecommend', 'isSpecial', 'isSold', 'isFengshui']) {
       if (patch[k] != null) next[k] = Boolean(patch[k]);
     }
     if (patch.onShelf != null) next.onShelf = Boolean(patch.onShelf);
