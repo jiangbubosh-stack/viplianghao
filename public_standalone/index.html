@@ -136,7 +136,7 @@ select.sort-select{border:1.5px solid var(--border);border-radius:999px;padding:
   <section class="banner">
     <h1>全国手机靓号 · 一站选齐</h1>
     <p>平台担保交易 · 号码资源充足 · 极速交付</p>
-    <div class="badges"><span class="badge">尾号4连</span><span class="badge">顺子号</span><span class="badge">AABB</span><span class="badge">ABAB</span><span class="badge">含888/666</span></div>
+    <div class="badges"><span class="badge">尾号4连</span><span class="badge">顺子号</span><span class="badge">对子号</span><span class="badge">循环号</span><span class="badge">含888/666</span></div>
   </section>
 
   <div class="marquee"><div class="track" id="marqueeTrack"><span>加载中…</span></div></div>
@@ -280,8 +280,8 @@ function classify(n){
   var tail=n.slice(-4),d=n.split("").map(Number),tag="",level="普通";
   if(/(\d)\1{3}$/.test(n)){tag="尾号"+n[n.length-1]+"连";level="靓号";}
   else if(/(\d)\1{2}$/.test(n.slice(-3))){tag="尾号"+n[n.length-1]+"连";level="靓号";}
-  else if(tail[0]===tail[1]&&tail[2]===tail[3]&&tail[0]!==tail[2]){tag="尾号AABB";level="靓号";}
-  else if(tail[0]===tail[2]&&tail[1]===tail[3]&&tail[0]!==tail[1]){tag="尾号ABAB";level="靓号";}
+  else if(tail[0]===tail[1]&&tail[2]===tail[3]&&tail[0]!==tail[2]){tag="对子号";level="靓号";}
+  else if(tail[0]===tail[2]&&tail[1]===tail[3]&&tail[0]!==tail[1]){tag="循环号";level="靓号";}
   else if(d.slice(-4).every(function(x,i,a){return i===0||x===a[i-1]+1;})){tag="顺子号";level="靓号";}
   else if(d.slice(-4).every(function(x,i,a){return i===0||x===a[i-1]-1;})){tag="倒顺号";level="靓号";}
   else if(n.indexOf("888")>=0){tag="含888";level="靓号";}
@@ -295,12 +295,12 @@ function genId(){return "n_"+Math.random().toString(36).slice(2,10)+Date.now().t
 var SEED=[
   {number:"17088880999",price:8800,tag:"尾号4连"},{number:"13166668888",price:12800,tag:"尾号4连"},
   {number:"18612345678",price:3600,tag:"顺子号"},{number:"18900001111",price:5200,tag:"尾号3连"},
-  {number:"13322223333",price:6800,tag:"AABB"},{number:"19876543210",price:9800,tag:"倒顺号"},
-  {number:"17788889999",price:15800,tag:"尾号4连"},{number:"16512344321",price:1200,tag:"ABAB"},
+  {number:"13322223333",price:6800,tag:"对子号"},{number:"19876543210",price:9800,tag:"倒顺号"},
+  {number:"17788889999",price:15800,tag:"尾号4连"},{number:"16512344321",price:1200,tag:"循环号"},
   {number:"15011112222",price:4200,tag:"尾号3连"},{number:"18199998888",price:13800,tag:"尾号4连"},
   {number:"13800001357",price:2600,tag:"普通号"},{number:"16755556666",price:7600,tag:"尾号4连"},
   {number:"19912349876",price:3200,tag:"倒顺号"},{number:"15566667777",price:11200,tag:"尾号4连"},
-  {number:"13288887777",price:12600,tag:"尾号4连"},{number:"18011112233",price:3900,tag:"AABB"},
+  {number:"13288887777",price:12600,tag:"尾号4连"},{number:"18011112233",price:3900,tag:"对子号"},
   {number:"17122225555",price:8800,tag:"尾号4连"},{number:"15933334444",price:6400,tag:"尾号4连"},
   {number:"16244445555",price:5400,tag:"尾号4连"},{number:"13456789876",price:2900,tag:"倒顺号"}
 ];
