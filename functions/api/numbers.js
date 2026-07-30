@@ -1,13 +1,24 @@
 import { json, error, seedIfEmpty, service } from '../_lib.js';
 
 export async function onRequestGet({ request, env }) {
+  await seedIfEmpty(env);
+  const url = new URL(request.url);
   try {
-    await seedIfEmpty(env);
-    const url = new URL(request.url);
     const result = await service.list(env, {
       q: url.searchParams.get('q') || '',
       operator: url.searchParams.get('operator') || 'all',
       level: url.searchParams.get('level') || 'all',
+      status: url.searchParams.get('status') || 'all',
+      brand: url.searchParams.get('brand') || 'all',
+      province: url.searchParams.get('province') || 'all',
+      city: url.searchParams.get('city') || 'all',
+      source: url.searchParams.get('source') || 'all',
+      recommendLevel: url.searchParams.get('recommendLevel') || 'all',
+      onShelf: url.searchParams.get('onShelf') || 'all',
+      isSold: url.searchParams.get('isSold') || 'all',
+      isHot: url.searchParams.get('isHot') || 'all',
+      isRecommend: url.searchParams.get('isRecommend') || 'all',
+      isSpecial: url.searchParams.get('isSpecial') || 'all',
       minPrice: url.searchParams.get('minPrice') || '',
       maxPrice: url.searchParams.get('maxPrice') || '',
       notIn: url.searchParams.get('notIn') || '',
@@ -17,7 +28,6 @@ export async function onRequestGet({ request, env }) {
     });
     return json(result);
   } catch (e) {
-    if (e && e.message === 'KV_NOT_BOUND') return error(500, 'CONFIG', 'KV 未绑定：请在 Cloudflare Pages 设置里绑定名为 NUMBERS_KV 的 KV 命名空间');
     return error(500, 'INTERNAL', '服务器内部错误');
   }
 }
