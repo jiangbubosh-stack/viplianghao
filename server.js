@@ -110,14 +110,14 @@ function classifyNumber(number) {
     tag = `尾号${number[number.length - 1]}连`;
     level = '靓号';
   }
-  // AABB (last 4)
+  // 对子号 AABB (last 4)
   else if (tail[0] === tail[1] && tail[2] === tail[3] && tail[0] !== tail[2]) {
-    tag = '尾号AABB';
+    tag = '对子号';
     level = '靓号';
   }
-  // ABAB
+  // 循环号 ABAB
   else if (tail[0] === tail[2] && tail[1] === tail[3] && tail[0] !== tail[1]) {
-    tag = '尾号ABAB';
+    tag = '循环号';
     level = '靓号';
   }
   // ABCD 顺序 (递增)
@@ -444,10 +444,10 @@ process.on('SIGTERM', () => {
       { number: '13166668888', price: 12800, tag: '尾号4连' },
       { number: '18612345678', price: 3600, tag: '顺子号' },
       { number: '18900001111', price: 5200, tag: '尾号3连' },
-      { number: '13322223333', price: 6800, tag: 'AABB' },
+      { number: '13322223333', price: 6800, tag: '对子号' },
       { number: '19876543210', price: 9800, tag: '倒顺号' },
       { number: '17788889999', price: 15800, tag: '尾号4连' },
-      { number: '16512344321', price: 1200, tag: 'ABAB' },
+      { number: '16512344321', price: 1200, tag: '循环号' },
       { number: '15011112222', price: 4200, tag: '尾号3连' },
       { number: '18199998888', price: 13800, tag: '尾号4连' },
       { number: '13800001357', price: 2600, tag: '普通号' },
@@ -455,7 +455,7 @@ process.on('SIGTERM', () => {
       { number: '19912349876', price: 3200, tag: '倒顺号' },
       { number: '15566667777', price: 11200, tag: '尾号4连' },
       { number: '13288887777', price: 12600, tag: '尾号4连' },
-      { number: '18011112233', price: 3900, tag: 'AABB' },
+      { number: '18011112233', price: 3900, tag: '对子号' },
       { number: '17122225555', price: 8800, tag: '尾号4连' },
       { number: '15933334444', price: 6400, tag: '尾号4连' },
       { number: '16244445555', price: 5400, tag: '尾号4连' },
