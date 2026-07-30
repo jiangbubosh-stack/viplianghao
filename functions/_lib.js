@@ -74,32 +74,25 @@ export function detectOperator(number) {
 }
 
 export function classifyNumber(number) {
-  const tail = number.slice(-4);
   const digits = number.split('').map(Number);
-  let tag = '';
-  let level = '普通';
+  const last = number[number.length - 1];
+  // 尾部连续相同位数（用于识别尾号 3 连 / 4 连）
+  let run = 1;
+  for (let i = number.length - 2; i >= 0; i--) {
+    if (number[i] === number[i + 1]) run++;
+    else break;
+  }
+  const tail = number.slice(-4);
 
-  if (/(\d)\1{3}$/.test(number)) {
-    tag = `尾号${number[number.length - 1]}连`;
-    level = '靓号';
-  } else if (/(\d)\1{2}$/.test(number.slice(-3))) {
-    tag = `尾号${number[number.length - 1]}连`;
-    level = '靓号';
-  } else if (tail[0] === tail[1] && tail[2] === tail[3] && tail[0] !== tail[2]) {
-    tag = '对子号';
-    level = '靓号';
-  } else if (tail[0] === tail[2] && tail[1] === tail[3] && tail[0] !== tail[1]) {
-    tag = '循环号';
-    level = '靓号';
-  } else if (digits.slice(-4).every((d, i, a) => i === 0 || d === a[i - 1] + 1)) {
-    tag = '顺子号';
-    level = '靓号';
-  } else if (digits.slice(-4).every((d, i, a) => i === 0 || d === a[i - 1] - 1)) {
-    tag = '倒顺号';
-    level = '靓号';
-  } else if (number.includes('888')) { tag = '含888'; level = '靓号'; } else if (number.includes('666')) { tag = '含666'; level = '靓号'; }
-
-  return { level, tag };
+  if (run >= 4) return { level: '靓号', tag: '尾号4连' };
+  if (run === 3) return { level: '靓号', tag: '尾号3连' };
+  if (tail[0] === tail[1] && tail[2] === tail[3] && tail[0] !== tail[2]) return { level: '靓号', tag: '对子号' };
+  if (tail[0] === tail[2] && tail[1] === tail[3] && tail[0] !== tail[1]) return { level: '靓号', tag: '循环号' };
+  if (digits.slice(-4).every((d, i, a) => i === 0 || d === a[i - 1] + 1)) return { level: '靓号', tag: '顺子号' };
+  if (digits.slice(-4).every((d, i, a) => i === 0 || d === a[i - 1] - 1)) return { level: '靓号', tag: '倒顺号' };
+  if (number.includes('888')) return { level: '靓号', tag: '含888' };
+  if (number.includes('666')) return { level: '靓号', tag: '含666' };
+  return { level: '普通号', tag: '普通号' };
 }
 
 export function normalizeNumber(raw) {
