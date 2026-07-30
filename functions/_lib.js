@@ -137,7 +137,8 @@ export async function readAll(env) {
   if (!raw) return [];
   try {
     const arr = JSON.parse(raw);
-    return Array.isArray(arr) ? dedupe(arr) : [];
+    if (!Array.isArray(arr)) return [];
+    return dedupe(arr.map(backfillNumber));
   } catch {
     return [];
   }
@@ -147,6 +148,38 @@ export async function writeAll(env, items) {
   const kv = env && env.NUMBERS_KV;
   if (!kv) throw new Error('KV_NOT_BOUND');
   await kv.put(KV_KEY, JSON.stringify(items));
+}
+
+// 补全单个号码的字段（兼容旧数据，新字段缺失时按号段自动填充）
+export function backfillNumber(it) {
+  if (!it || !it.number) return it;
+  const op = it.operator || detectOperator(it.number);
+  const [prov, city] = (it.province && it.city) ? [it.province, it.city] : getLocation(it.number);
+  const cls = it.level && it.tag ? { level: it.level, tag: it.tag } : classifyNumber(it.number);
+  return {
+    id: it.id || genId(),
+    number: it.number,
+    operator: op,
+    brand: it.brand || getBrand(it.number),
+    province: prov,
+    city: city,
+    hotline: it.hotline || getHotline(op),
+    level: it.level || cls.level,
+    tag: it.tag || cls.tag || '普通号',
+    price: Number(it.price) || 0,
+    originalPrice: Number(it.originalPrice) || 0,
+    packageDetail: it.packageDetail || '',
+    installment: Number(it.installment) || 0,
+    source: it.source || '自有',
+    recommendLevel: it.recommendLevel || '',
+    isHot: Boolean(it.isHot),
+    isRecommend: Boolean(it.isRecommend),
+    isSpecial: Boolean(it.isSpecial),
+    onShelf: it.onShelf !== false,
+    isSold: Boolean(it.isSold),
+    status: it.status || (it.onShelf === false ? 'offline' : (it.isSold ? 'sold' : 'available')),
+    createdAt: it.createdAt || new Date().toISOString(),
+  };
 }
 
 // 按手机号去重（保留最早一条），避免种子并发导致的重复
