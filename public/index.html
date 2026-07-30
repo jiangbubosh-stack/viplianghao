@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+  <title>全国靓号选号系统</title>
+  <meta name="description" content="全国手机靓号选号系统，平台担保交易，无风险！" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <div class="logo"><span class="mark">靓</span> 全国靓号选号系统</div>
+      <nav class="header-nav">
+        <a href="#list">靓号大厅</a>
+        <a href="#search">精准选号</a>
+        <a class="admin-link" href="/admin">管理后台</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="banner">
+    <h1>全国手机靓号 · 一站选齐</h1>
+    <p>平台担保交易 · 号码资源充足 · 极速交付</p>
+    <div class="badges">
+      <span class="badge">尾号4连</span>
+      <span class="badge">顺子号</span>
+      <span class="badge">AABB</span>
+      <span class="badge">ABAB</span>
+      <span class="badge">含888/666</span>
+    </div>
+  </section>
+
+  <div class="marquee" id="marquee">
+    <div class="track" id="marqueeTrack"><span>加载中…</span></div>
+  </div>
+
+  <main class="container" id="search">
+    <section class="search-section">
+      <div class="search-title">🔍 精准选号（留空表示任意，支持通配 *）</div>
+      <div class="digit-row" id="digitRow"></div>
+      <div class="search-actions">
+        <button class="btn btn-primary" id="searchBtn">搜索靓号</button>
+        <button class="btn btn-ghost" id="resetBtn">重置</button>
+      </div>
+      <div class="search-hint">示例：第 4 位填 8、其余留空 → 匹配 “***8********”；或在框内直接输入部分号码 / 用 * 占位。</div>
+    </section>
+
+    <div class="filters">
+      <div class="filter-group" id="operatorFilter">
+        <span class="label">运营商</span>
+        <button class="chip active" data-operator="all">全部</button>
+        <button class="chip" data-operator="移动">移动</button>
+        <button class="chip" data-operator="联通">联通</button>
+        <button class="chip" data-operator="电信">电信</button>
+        <button class="chip" data-operator="虚拟运营商">虚拟运营商</button>
+      </div>
+      <div class="filter-group" id="levelFilter">
+        <span class="label">类型</span>
+        <button class="chip active" data-level="all">全部</button>
+        <button class="chip" data-level="靓号">靓号</button>
+        <button class="chip" data-level="普通">普通号</button>
+      </div>
+      <div class="filter-group" style="margin-left:auto;">
+        <span class="label">排序</span>
+        <select class="sort-select" id="sortSelect">
+          <option value="new">最新上架</option>
+          <option value="price_desc">价格高→低</option>
+          <option value="price_asc">价格低→高</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid" id="grid">
+      <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+    </div>
+
+    <div class="pagination" id="pagination"></div>
+  </main>
+
+  <footer class="site-footer">
+    <p>© 全国靓号选号系统 · 平台担保交易 · 客服微信：your-wechat</p>
+    <p style="margin-top:6px;opacity:.7">本页面仅作号码展示，交易请通过正规渠道。</p>
+  </footer>
+
+  <script src="/js/public.js"></script>
+</body>
+</html>
