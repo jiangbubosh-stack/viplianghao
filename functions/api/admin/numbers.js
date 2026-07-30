@@ -10,9 +10,19 @@ export async function onRequestGet({ request, env }) {
       operator: url.searchParams.get('operator') || 'all',
       level: url.searchParams.get('level') || 'all',
       status: url.searchParams.get('status') || 'all',
-      sort: 'new',
+      brand: url.searchParams.get('brand') || 'all',
+      province: url.searchParams.get('province') || 'all',
+      city: url.searchParams.get('city') || 'all',
+      source: url.searchParams.get('source') || 'all',
+      recommendLevel: url.searchParams.get('recommendLevel') || 'all',
+      onShelf: url.searchParams.get('onShelf') || 'all',
+      isSold: url.searchParams.get('isSold') || 'all',
+      isHot: url.searchParams.get('isHot') || 'all',
+      isRecommend: url.searchParams.get('isRecommend') || 'all',
+      isSpecial: url.searchParams.get('isSpecial') || 'all',
+      sort: url.searchParams.get('sort') || 'new',
       page: url.searchParams.get('page') || 1,
-      pageSize: url.searchParams.get('pageSize') || 100,
+      pageSize: url.searchParams.get('pageSize') || 20,
     });
     return json(result);
   } catch (e) {
