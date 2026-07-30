@@ -43,6 +43,7 @@
         <div class="sb-sub">
           <div class="sb-item sb-child active" data-route="numbers-ziyou">自有号码</div>
           <div class="sb-item sb-child" data-route="numbers-gonggong">公共号池</div>
+          <div class="sb-item sb-child" data-route="fengshui">风水号</div>
         </div>
       </div>
 
@@ -185,6 +186,37 @@
         <div class="pager" id="pager"></div>
       </div>
 
+      <!-- ============== 风水号管理 ============== -->
+      <div class="view view-fengshui" data-view="fengshui" style="display:none">
+        <div class="welcome-card" style="margin-bottom:12px">
+          <div class="wc-text">风水号专区联系微信：<b style="color:#b3121a">15316666627</b>（可在「系统配置 / 站点设置」修改）</div>
+        </div>
+        <div class="toolbar">
+          <button class="tb-btn primary" id="fsAddBtn">➕ 添加风水号</button>
+          <input class="tb-input" id="fsSearch" placeholder="搜索手机号" />
+          <button class="tb-btn" id="fsSearchBtn">🔍</button>
+          <span class="bulk-sep">|</span>
+          <button class="bulk-btn red" id="fsClearBtn">🗑 清空风水号</button>
+        </div>
+        <div class="table-wrap">
+          <table class="admin-table" id="fsTable">
+            <thead>
+              <tr>
+                <th>手机号码</th>
+                <th>运营商</th>
+                <th>底价</th>
+                <th>标签/规则</th>
+                <th>套餐/备注</th>
+                <th>状态</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="fsListBody"></tbody>
+          </table>
+        </div>
+        <div class="pager" id="fsPager"></div>
+      </div>
+
       <!-- ============== 站点设置 ============== -->
       <div class="view view-settings" data-view="settings" style="display:none">
         <div class="panel">
@@ -316,6 +348,37 @@
     <div class="modal-foot">
       <button class="btn btn-ghost" data-close>取消</button>
       <button class="btn btn-primary" id="mSave">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 添加风水号弹窗 -->
+<div class="modal" id="fsModal" style="display:none">
+  <div class="modal-card">
+    <div class="modal-head">
+      <span>添加风水号</span>
+      <button class="modal-close" data-close>×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="field"><label>手机号 *</label><input id="fsNumber" inputmode="numeric" placeholder="11位手机号" /></div>
+        <div class="field"><label>运营商</label>
+          <select id="fsOperator">
+            <option value="auto">自动识别</option>
+            <option>移动</option><option>联通</option><option>电信</option><option>虚拟运营商</option>
+          </select>
+        </div>
+        <div class="field"><label>底价（元）</label><input id="fsPrice" inputmode="decimal" placeholder="0" /></div>
+        <div class="field"><label>标签/规则</label><input id="fsTag" placeholder="如 尾号4连 / 发财号 / 顺子" /></div>
+        <div class="field full"><label>套餐 / 备注</label><textarea id="fsPkg" rows="2" placeholder="如：低消69，含60分钟+15G流量"></textarea></div>
+        <div class="field full flags">
+          <label class="ck"><input type="checkbox" id="fsOnShelf" checked /> 上架（在前台展示）</label>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" data-close>取消</button>
+      <button class="btn btn-primary" id="fsSave">保存</button>
     </div>
   </div>
 </div>
