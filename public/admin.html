@@ -37,6 +37,12 @@
       <a class="btn btn-ghost btn-sm" href="/">查看前台</a>
     </div>
 
+    <div class="admin-tabs">
+      <div class="at active" data-tab="manage">号码管理</div>
+      <div class="at" data-tab="settings">站点设置</div>
+    </div>
+
+    <div id="managePane">
     <div class="stat-row" id="statRow"></div>
 
     <div class="admin-layout">
@@ -109,6 +115,50 @@
         </div>
         <div class="pagination" id="adminPagination" style="margin:14px 0 0"></div>
       </section>
+    </div>
+    </div><!-- /managePane -->
+
+    <div id="settingsPane" style="display:none">
+      <div class="panel">
+        <h3>🎨 站点设置 <span class="count">保存后前台实时生效</span></h3>
+        <div class="field">
+          <label for="setSiteName">站点名称</label>
+          <input id="setSiteName" placeholder="上海成霞通讯选号系统" />
+        </div>
+        <div class="field">
+          <label for="setLogoText">Logo 文字（头部方块，建议 1 字）</label>
+          <input id="setLogoText" maxlength="2" placeholder="成" />
+        </div>
+        <div class="field">
+          <label for="setThemeColor">主题色</label>
+          <div class="color-row">
+            <input type="color" id="setThemeColor" value="#e4393c" />
+            <input id="setThemeColorHex" placeholder="#e4393c" style="flex:1" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="setContactQrUrl">客服二维码图片 URL</label>
+          <input id="setContactQrUrl" placeholder="https://.../qr.png" />
+        </div>
+        <div class="field">
+          <label for="setContactPhone">客服电话</label>
+          <input id="setContactPhone" placeholder="如 15316666627" inputmode="tel" />
+        </div>
+        <div class="field">
+          <label for="setContactWechat">客服微信号</label>
+          <input id="setContactWechat" placeholder="如 chengxia_tx" />
+        </div>
+        <div class="field">
+          <label for="setBanners">Banner 轮播图（每行一个图片 URL，留空用默认渐变）</label>
+          <textarea id="setBanners" placeholder="https://.../banner1.jpg&#10;https://.../banner2.jpg"></textarea>
+        </div>
+        <div class="field">
+          <label for="setNoticeText">滚动公告（每行一条，前台横向滚动）</label>
+          <textarea id="setNoticeText" placeholder="平台担保交易，安全无忧&#10;恭喜客户成功办理 178****8888"></textarea>
+        </div>
+        <button class="btn btn-primary" style="width:100%" id="saveSettingsBtn">保存设置</button>
+        <p class="hint">提示：Banner / 二维码需填公网可访问的图片地址；主题色同时影响前台主色与按钮。</p>
+      </div>
     </div>
   </main>
 
