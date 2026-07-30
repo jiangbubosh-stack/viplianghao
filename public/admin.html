@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>靓号管理后台</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <div class="logo"><span class="mark">管</span> 靓号管理后台</div>
+      <nav class="header-nav">
+        <a href="/">返回前台</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Login -->
+  <div class="auth-wrap" id="loginView">
+    <div class="auth-card">
+      <h2>管理员登录</h2>
+      <p class="sub">请输入后台密码以继续</p>
+      <div class="field">
+        <label for="pwd">密码</label>
+        <input type="password" id="pwd" placeholder="请输入密码" autocomplete="current-password" />
+      </div>
+      <button class="btn btn-primary" style="width:100%" id="loginBtn">登录</button>
+      <p class="sub" style="margin-top:14px;font-size:12px" id="loginErr"></p>
+    </div>
+  </div>
+
+  <!-- Dashboard -->
+  <main class="container" id="dashView" style="display:none; padding:20px 16px 50px;">
+    <div class="admin-topbar">
+      <div class="who">欢迎，管理员 <button class="btn btn-ghost btn-sm" id="logoutBtn" style="margin-left:10px">退出</button></div>
+      <a class="btn btn-ghost btn-sm" href="/">查看前台</a>
+    </div>
+
+    <div class="stat-row" id="statRow"></div>
+
+    <div class="admin-layout">
+      <!-- Upload panel -->
+      <section class="panel">
+        <h3>📥 上传号码</h3>
+        <div class="tabs">
+          <div class="tab active" data-tab="file">文件上传</div>
+          <div class="tab" data-tab="paste">粘贴文本</div>
+          <div class="tab" data-tab="single">单个添加</div>
+        </div>
+
+        <!-- File -->
+        <div class="tab-pane" data-pane="file">
+          <div class="file-drop" id="fileDrop">
+            点击选择 .txt / .csv 文件<br/>每行一个号码，或用逗号分隔：号码,运营商,类型,标签,价格
+          </div>
+          <input type="file" id="fileInput" accept=".txt,.csv,.text" style="display:none" />
+          <p class="sub" style="font-size:12px;margin-top:10px" id="fileInfo"></p>
+          <button class="btn btn-primary" style="width:100%;margin-top:10px" id="uploadFileBtn">上传并导入</button>
+        </div>
+
+        <!-- Paste -->
+        <div class="tab-pane" data-pane="paste" style="display:none">
+          <div class="field">
+            <label for="pasteArea">号码列表（每行一个；可用逗号分隔字段）</label>
+            <textarea id="pasteArea" placeholder="17088880999&#10;13166668888,联通&#10;18612345678,移动,靓号,顺子号,2000"></textarea>
+          </div>
+          <button class="btn btn-primary" style="width:100%" id="uploadPasteBtn">导入文本</button>
+        </div>
+
+        <!-- Single -->
+        <div class="tab-pane" data-pane="single" style="display:none">
+          <div class="field">
+            <label for="sNumber">手机号</label>
+            <input id="sNumber" placeholder="11位手机号" inputmode="numeric" />
+          </div>
+          <div class="field">
+            <label for="sOperator">运营商</label>
+            <select id="sOperator">
+              <option value="auto">自动识别</option>
+              <option value="移动">移动</option>
+              <option value="联通">联通</option>
+              <option value="电信">电信</option>
+              <option value="虚拟运营商">虚拟运营商</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="sTag">标签（可选）</label>
+            <input id="sTag" placeholder="如：尾号8888" />
+          </div>
+          <div class="field">
+            <label for="sPrice">价格（元，可选）</label>
+            <input id="sPrice" placeholder="0" inputmode="decimal" />
+          </div>
+          <button class="btn btn-primary" style="width:100%" id="addSingleBtn">添加号码</button>
+        </div>
+      </section>
+
+      <!-- List -->
+      <section class="panel">
+        <h3>📋 号码列表 <span class="count" id="listCount"></span></h3>
+        <div style="overflow-x:auto">
+          <table class="admin-table">
+            <thead>
+              <tr><th>号码</th><th>运营商</th><th>标签</th><th>价格</th><th>状态</th><th></th></tr>
+            </thead>
+            <tbody id="listBody"></tbody>
+          </table>
+        </div>
+        <div class="pagination" id="adminPagination" style="margin:14px 0 0"></div>
+      </section>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="/js/admin.js"></script>
+</body>
+</html>
