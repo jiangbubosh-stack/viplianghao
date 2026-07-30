@@ -64,6 +64,7 @@ const ROUTE_BREADCRUMB = {
   company: '公司管理 / 公司信息',
   'numbers-ziyou': '号码管理 / 自有号码',
   'numbers-gonggong': '号码管理 / 公共号池',
+  fengshui: '号码管理 / 风水号',
   orders: '订单管理',
   promo: '推广管理',
   finance: '财务管理',
@@ -97,6 +98,8 @@ function goto(route) {
   }
   // 站点设置
   if (route === 'settings') loadSettings();
+  // 风水号
+  if (route === 'fengshui') loadFengshuiList();
   // 我的桌面
   if (route === 'home') loadHome();
 }
@@ -509,6 +512,159 @@ $('#saveSettingsBtn').addEventListener('click', async () => {
   try {
     await api('/api/admin/settings', { method: 'POST', body: JSON.stringify(payload) });
     toast('站点设置已保存，前台实时生效', 'ok');
+  } catch (e) { toast(e.message, 'err'); }
+});
+
+// ---------- 初始化 ----------
+if (token) {
+// ---------- 风水号管理 ----------
+let fsPage = 1;
+const fsPageSize = 10;
+let fsTotalPages = 1;
+let fsTotal = 0;
+let fsCurFilters = {};
+
+async function loadFengshuiList() {
+  const params = new URLSearchParams({
+    isFengshui: 'yes',
+    page: fsPage,
+    pageSize: fsPageSize,
+    q: fsCurFilters.q || '',
+  });
+  try {
+    const r = await api('/api/admin/numbers?' + params.toString());
+    fsTotal = r.total; fsTotalPages = r.totalPages;
+    renderFsTable(r.data);
+    renderFsPager();
+  } catch (e) { toast(e.message, 'err'); }
+}
+
+function renderFsTable(items) {
+  const body = $('#fsListBody');
+  if (!items.length) {
+    body.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#9aa3af;padding:30px">暂无风水号，点击「添加风水号」录入</td></tr>`;
+    return;
+  }
+  body.innerHTML = items.map((it) => {
+    const opBg = it.operator === '移动' ? '#3b82f6' : it.operator === '联通' ? '#f97316' : it.operator === '电信' ? '#22c55e' : '#a855f7';
+    return `
+      <tr data-id="${it.id}">
+        <td class="num-cell">${it.number}</td>
+        <td><span class="op-pill" style="background:${opBg}">${it.operator || ''}</span></td>
+        <td><b>¥ ${it.price || 0}</b></td>
+        <td>${it.tag || ''}</td>
+        <td>${it.packageDetail ? it.packageDetail.slice(0, 24) + (it.packageDetail.length > 24 ? '…' : '') : '—'}</td>
+        <td>
+          <label class="switch sm">
+            <input type="checkbox" data-toggle="onShelf" ${it.onShelf !== false ? 'checked' : ''} />
+            <span>${it.onShelf !== false ? '上架' : '下架'}</span>
+          </label>
+        </td>
+        <td class="ops">
+          <a class="op-link" data-act="edit">编辑</a>
+          <a class="op-link red" data-act="del">删除</a>
+        </td>
+      </tr>`;
+  }).join('');
+
+  body.querySelectorAll('[data-act="edit"]').forEach((b) => b.addEventListener('click', () => openFsModal(b.closest('tr').dataset.id)));
+  body.querySelectorAll('[data-act="del"]').forEach((b) => b.addEventListener('click', async () => {
+    const id = b.closest('tr').dataset.id;
+    if (!confirm('确定删除该风水号？')) return;
+    try { await api('/api/admin/numbers/' + id, { method: 'DELETE' }); toast('已删除', 'ok'); loadFengshuiList(); } catch (e) { toast(e.message, 'err'); }
+  }));
+  body.querySelectorAll('input[data-toggle]').forEach((el) => el.addEventListener('change', async () => {
+    const id = el.closest('tr').dataset.id;
+    const key = el.dataset.toggle;
+    try {
+      await api('/api/admin/numbers/' + id, { method: 'PUT', body: JSON.stringify({ [key]: el.checked, isFengshui: true }) });
+      const span = el.nextElementSibling;
+      if (key === 'onShelf') span.textContent = el.checked ? '上架' : '下架';
+      toast('已更新', 'ok');
+    } catch (e) { toast(e.message, 'err'); el.checked = !el.checked; }
+  }));
+}
+
+function renderFsPager() {
+  const el = $('#fsPager');
+  const cur = fsPage, total = fsTotalPages;
+  if (total <= 1 && fsTotal < fsPageSize) { el.innerHTML = `<span class="pager-info">共 ${fsTotal} 条</span>`; return; }
+  let html = `<span class="pager-info">共 ${fsTotal} 条</span>`;
+  html += `<button class="pg-btn" ${cur === 1 ? 'disabled' : ''} data-page="${cur - 1}">上一页</button>`;
+  const start = Math.max(1, cur - 2);
+  const end = Math.min(total, start + 4);
+  for (let p = start; p <= end; p++) html += `<button class="pg-btn ${p === cur ? 'active' : ''}" data-page="${p}">${p}</button>`;
+  if (end < total) html += `<span class="pg-info">...</span><button class="pg-btn" data-page="${total}">${total}</button>`;
+  html += `<button class="pg-btn" ${cur === total ? 'disabled' : ''} data-page="${cur + 1}">下一页</button>`;
+  el.innerHTML = html;
+  el.querySelectorAll('button[data-page]').forEach((b) => b.addEventListener('click', () => {
+    const p = parseInt(b.dataset.page, 10);
+    if (p >= 1 && p <= total) { fsPage = p; loadFengshuiList(); }
+  }));
+}
+
+const fsModal = $('#fsModal');
+let fsEditingId = null;
+
+function openFsModal(id) {
+  fsEditingId = id || null;
+  $('#fsNumber').value = '';
+  $('#fsNumber').disabled = !!id;
+  $('#fsOperator').value = 'auto';
+  $('#fsPrice').value = '';
+  $('#fsTag').value = '';
+  $('#fsPkg').value = '';
+  $('#fsOnShelf').checked = true;
+  if (id) {
+    api('/api/numbers/' + encodeURIComponent(id)).then((r) => {
+      const n = r.data;
+      $('#fsNumber').value = n.number;
+      $('#fsOperator').value = n.operator;
+      $('#fsPrice').value = n.price;
+      $('#fsTag').value = n.tag || '';
+      $('#fsPkg').value = n.packageDetail || '';
+      $('#fsOnShelf').checked = n.onShelf !== false;
+    }).catch(() => toast('读取失败', 'err'));
+  }
+  fsModal.style.display = 'flex';
+}
+
+$('#fsAddBtn').addEventListener('click', () => openFsModal());
+$('#fsSave').addEventListener('click', async () => {
+  const payload = {
+    number: $('#fsNumber').value.trim(),
+    operator: $('#fsOperator').value,
+    price: Number($('#fsPrice').value) || 0,
+    tag: $('#fsTag').value.trim(),
+    packageDetail: $('#fsPkg').value.trim(),
+    onShelf: $('#fsOnShelf').checked,
+    source: '风水号',
+    isFengshui: true,
+  };
+  if (!payload.number) { toast('请输入手机号', 'err'); return; }
+  try {
+    if (fsEditingId) {
+      await api('/api/admin/numbers/' + fsEditingId, { method: 'PUT', body: JSON.stringify(payload) });
+      toast('已保存', 'ok');
+    } else {
+      await api('/api/admin/numbers', { method: 'POST', body: JSON.stringify(payload) });
+      toast('已添加风水号', 'ok');
+    }
+    fsModal.style.display = 'none';
+    loadFengshuiList();
+  } catch (e) { toast(e.message, 'err'); }
+});
+
+$('#fsSearchBtn').addEventListener('click', () => {
+  fsCurFilters = { q: $('#fsSearch').value.trim() };
+  fsPage = 1; loadFengshuiList();
+});
+
+$('#fsClearBtn').addEventListener('click', async () => {
+  if (!confirm('确定清空所有风水号？此操作不可恢复！')) return;
+  try {
+    const r = await api('/api/admin/numbers/bulk', { method: 'POST', body: JSON.stringify({ action: 'clearPool', source: '风水号' }) });
+    toast(`已清空 ${r.removed} 条`, 'ok'); fsPage = 1; loadFengshuiList();
   } catch (e) { toast(e.message, 'err'); }
 });
 
