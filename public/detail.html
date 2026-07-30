@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+  <title>靓号详情 · 上海成霞通讯选号系统</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body class="detail-body">
+  <div class="app">
+  <!-- 顶部条：返回箭头 + 标题 -->
+  <header class="detail-top">
+    <a class="back-btn" href="javascript:history.back()" aria-label="返回">‹</a>
+    <div class="title">靓号详情</div>
+    <div class="top-spacer"></div>
+  </header>
+
+  <!-- 加载中 / 错误占位 -->
+  <div id="loadingState" class="state-block">加载中…</div>
+  <div id="errorState" class="state-block" style="display:none">号码不存在或已下架</div>
+
+  <main id="detailMain" style="display:none">
+    <!-- 顶部蓝色 Banner -->
+    <section class="detail-hero">
+      <div class="hero-left">
+        <h1 class="hero-title">爱它，就带走它</h1>
+        <p class="hero-sub">让每一个靓号找到属于它的主人</p>
+        <div class="hero-dots"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        <span class="hero-tag">精品靓号 · 超值底价</span>
+      </div>
+      <div class="hero-illu" aria-hidden="true">
+        <div class="phone-card-mini">
+          <div class="pc-line"></div>
+          <div class="pc-line short"></div>
+          <div class="pc-line"></div>
+          <div class="pc-line short"></div>
+        </div>
+        <div class="hero-emoji">📱</div>
+      </div>
+    </section>
+
+    <!-- 号码信息卡 -->
+    <section class="detail-card">
+      <div class="detail-card-row">
+        <div class="dcr-num" id="dNumber">--</div>
+        <div class="dcr-brand">运营商品牌：<span id="dBrand">--</span></div>
+      </div>
+      <div class="detail-price-row">
+        <div class="d-price"><span class="yen">¥</span><span id="dPrice">--</span><span class="d-price-unit">.00</span></div>
+        <div class="d-orig" id="dOrigWrap">原价：<span id="dOrig">¥--</span></div>
+      </div>
+      <div class="detail-card-row">
+        <div class="dcr-key">运营商网络：<span id="dOperator">--</span></div>
+      </div>
+      <div class="detail-card-row">
+        <div class="dcr-key">号码归属地：<span id="dLoc">--</span></div>
+        <div class="dcr-hot">运营商服务热线：<span id="dHot">--</span></div>
+      </div>
+      <div class="detail-card-row">
+        <div class="dcr-key">号码规则：<span id="dRule">--</span></div>
+      </div>
+      <div class="detail-card-row detail-card-pkg">
+        <div class="dcr-key">套餐详情：<span id="dPkg">--</span></div>
+      </div>
+      <div class="sim-card" aria-hidden="true">
+        <div class="sim-notch"></div>
+        <div class="sim-chip"></div>
+      </div>
+    </section>
+
+    <!-- 客服条 -->
+    <section class="kefu-strip">
+      <div class="kefu-left">
+        <div class="kefu-icon" aria-hidden="true">
+          <span class="kefu-24">24</span>
+          <span class="kefu-h">H</span>
+        </div>
+        <div class="kefu-meta">
+          <div class="kefu-label">客服</div>
+          <div class="kefu-phone">手机：<a id="kefuPhone" href="tel:">--</a></div>
+        </div>
+      </div>
+      <a class="kefu-call-btn" id="kefuCall" href="tel:">一键呼叫</a>
+    </section>
+
+    <!-- 立即购买 -->
+    <button class="buy-btn" id="buyBtn">立即购买</button>
+
+    <!-- 温馨提示 -->
+    <section class="tips">
+      <h3>温馨提示：</h3>
+      <ol>
+        <li>选择心仪号码，可先联系客服确定号码是否存在！</li>
+        <li>下单成功之后，会安排快递进行发货，<em>快递均为到付</em>！</li>
+        <li>根据国家工信部相关规定，所有手机号码均需要实名激活。本平台严格遵守国家工信部《电话用户真实身份信息登记规定》（工业和信息化部令第25号）、电话"黑卡"治理专项行动工作方案。</li>
+        <li>显示"保"字样号码，为共享池号码，由平台进行担保支付，请放心下单！</li>
+      </ol>
+    </section>
+
+    <!-- 推荐号码 -->
+    <section class="recommend" id="recommendSection" style="display:none">
+      <h3>推荐号码：</h3>
+      <div class="recommend-grid" id="recommendGrid"></div>
+    </section>
+  </main>
+  </div>
+
+  <script src="/js/detail.js"></script>
+</body>
+</html>
