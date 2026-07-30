@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+<title>全国靓号选号系统</title>
+<style>
+:root{--primary:#e63946;--primary-dark:#c1121f;--primary-light:#ff6b6b;--gold:#f4a261;--bg:#f7f8fa;--card:#fff;--text:#1f2933;--text-soft:#6b7280;--border:#eceef1;--green:#16a34a;--radius:14px;--shadow:0 4px 18px rgba(17,24,39,.06);--shadow-hover:0 8px 28px rgba(230,57,70,.18);--maxw:1080px}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.container{max-width:var(--maxw);margin:0 auto;padding:0 16px}
+.site-header{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;position:sticky;top:0;z-index:50;box-shadow:0 2px 12px rgba(193,18,31,.25)}
+.site-header .container{display:flex;align-items:center;justify-content:space-between;height:56px}
+.logo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:18px}
+.logo .mark{width:30px;height:30px;border-radius:8px;background:#fff;color:var(--primary);display:grid;place-items:center;font-weight:900;font-size:16px}
+.header-nav{display:flex;gap:14px;font-size:14px}
+.header-nav a{opacity:.92;cursor:pointer}
+.header-nav a.active{font-weight:800;text-decoration:underline}
+@media(max-width:560px){.header-nav a:not(.nav-admin):not(.nav-show){display:none}}
+.banner{background:linear-gradient(120deg,#c1121f,#e63946 50%,#f4a261);color:#fff;text-align:center;padding:38px 16px 30px;position:relative;overflow:hidden}
+.banner::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 20%,rgba(255,255,255,.18),transparent 45%),radial-gradient(circle at 80% 60%,rgba(255,255,255,.12),transparent 40%)}
+.banner h1{font-size:26px;font-weight:800;position:relative}
+.banner p{position:relative;opacity:.95;margin-top:8px;font-size:14px}
+.banner .badges{position:relative;margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.banner .badge{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);padding:6px 14px;border-radius:999px;font-size:13px;font-weight:600}
+.marquee{background:#fff7e6;border-bottom:1px solid #ffe1a8;color:#b45309;font-size:13px;overflow:hidden;white-space:nowrap}
+.marquee .track{display:inline-block;padding:9px 0;animation:scroll-left 28s linear infinite}
+.marquee .track span{margin:0 22px}
+@keyframes scroll-left{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.search-section{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);margin:-18px auto 18px;padding:18px;max-width:var(--maxw);position:relative;z-index:5}
+.search-title{font-size:14px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.digit-row{display:flex;gap:6px;flex-wrap:wrap}
+.digit-row input{width:34px;height:42px;text-align:center;font-size:18px;font-weight:700;border:1.5px solid var(--border);border-radius:9px;outline:none;transition:border .15s,box-shadow .15s;color:var(--primary)}
+.digit-row input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(230,57,70,.12)}
+.digit-row input::placeholder{color:#cbd2d9;font-weight:500}
+.search-actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.btn{border:none;cursor:pointer;border-radius:10px;padding:11px 22px;font-size:14px;font-weight:700;transition:transform .12s,box-shadow .12s,background .2s;font-family:inherit}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;box-shadow:0 4px 14px rgba(230,57,70,.3)}
+.btn-primary:hover{box-shadow:var(--shadow-hover)}
+.btn-ghost{background:#f1f3f5;color:var(--text-soft)}
+.btn-ghost:hover{background:#e9ecef}
+.search-hint{font-size:12px;color:var(--text-soft);margin-top:10px}
+.filters{display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.filter-group{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.filter-group .label{font-size:13px;color:var(--text-soft);font-weight:600}
+.chip{border:1.5px solid var(--border);background:#fff;color:var(--text-soft);padding:6px 14px;border-radius:999px;font-size:13px;cursor:pointer;transition:all .15s;font-family:inherit}
+.chip:hover{border-color:var(--primary-light)}
+.chip.active{background:var(--primary);border-color:var(--primary);color:#fff;font-weight:600}
+select.sort-select{border:1.5px solid var(--border);border-radius:999px;padding:6px 14px;font-size:13px;font-family:inherit;background:#fff;color:var(--text);cursor:pointer;outline:none}
+.grid{display:grid;gap:12px;margin-bottom:24px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+.card{background:var(--card);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);border:1px solid var(--border);transition:transform .15s,box-shadow .15s;position:relative;overflow:hidden}
+.card:hover{transform:translateY(-3px);box-shadow:var(--shadow-hover)}
+.card.premium{border-color:#ffd9b3;background:linear-gradient(180deg,#fffdf9,#fff)}
+.card .num{font-size:22px;font-weight:800;letter-spacing:1px;color:var(--text);font-variant-numeric:tabular-nums;display:flex;align-items:center;gap:8px}
+.card .num .star{color:var(--gold)}
+.card .meta{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.tag{font-size:12px;padding:3px 10px;border-radius:999px;font-weight:600;background:#fde8e8;color:var(--primary-dark)}
+.tag.op{background:#e7f0ff;color:#1d4ed8}
+.tag.level{background:#fff3e0;color:#b45309}
+.card .footer{display:flex;align-items:center;justify-content:space-between;margin-top:14px}
+.price{font-size:20px;font-weight:800;color:var(--primary)}
+.price small{font-size:12px;font-weight:600}
+.status{font-size:12px;padding:3px 10px;border-radius:999px;font-weight:700}
+.status.available{background:#e7f9ee;color:var(--green)}
+.status.sold{background:#f1f3f5;color:#9aa3af}
+.empty{text-align:center;padding:50px 16px;color:var(--text-soft);grid-column:1/-1}
+.empty .big{font-size:40px;margin-bottom:8px}
+.pagination{display:flex;gap:8px;justify-content:center;align-items:center;margin:8px 0 40px;flex-wrap:wrap}
+.pagination button{min-width:38px;height:38px;border-radius:10px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:14px;font-weight:600;color:var(--text);font-family:inherit;transition:all .15s}
+.pagination button:hover:not(:disabled){border-color:var(--primary);color:var(--primary)}
+.pagination button.active{background:var(--primary);border-color:var(--primary);color:#fff}
+.pagination button:disabled{opacity:.4;cursor:not-allowed}
+.pagination .info{font-size:13px;color:var(--text-soft)}
+.skeleton{background:#eef1f4;border-radius:var(--radius);height:120px;animation:pulse 1.3s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+.site-footer{background:#1f2933;color:#9aa3af;text-align:center;padding:24px 16px;font-size:12px}
+.site-footer a{color:#cbd5e1}
+
+/* Admin */
+.auth-wrap{min-height:70vh;display:grid;place-items:center;padding:24px}
+.auth-card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:30px;width:100%;max-width:360px}
+.auth-card h2{font-size:20px;margin-bottom:6px}
+.auth-card p.sub{color:var(--text-soft);font-size:13px;margin-bottom:20px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
+.field input,.field textarea,.field select{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:11px 13px;font-size:14px;font-family:inherit;outline:none;transition:border .15s,box-shadow .15s;background:#fff;color:var(--text)}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(230,57,70,.12)}
+.field textarea{min-height:150px;resize:vertical;font-family:ui-monospace,Menlo,monospace}
+.admin-layout{display:grid;grid-template-columns:1fr;gap:18px}
+@media(min-width:880px){.admin-layout{grid-template-columns:380px 1fr;align-items:start}}
+.panel{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
+.panel h3{font-size:16px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.panel h3 .count{margin-left:auto;font-size:12px;color:var(--text-soft);font-weight:600}
+.stat-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.stat{flex:1;min-width:110px;background:var(--bg);border-radius:12px;padding:14px;text-align:center}
+.stat .v{font-size:24px;font-weight:800;color:var(--primary)}
+.stat .k{font-size:12px;color:var(--text-soft);margin-top:2px}
+.admin-table{width:100%;border-collapse:collapse;font-size:13px}
+.admin-table th,.admin-table td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--border)}
+.admin-table th{color:var(--text-soft);font-weight:600;font-size:12px}
+.admin-table td.num{font-weight:700;font-variant-numeric:tabular-nums}
+.admin-table .del{color:var(--primary);cursor:pointer;font-weight:600;border:none;background:none;font-size:13px}
+.admin-table .del:hover{text-decoration:underline}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);background:#1f2933;color:#fff;padding:12px 20px;border-radius:10px;font-size:14px;opacity:0;pointer-events:none;transition:all .25s;z-index:100;max-width:90vw}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.ok{background:#16a34a}
+.toast.err{background:#dc2626}
+.tabs{display:flex;gap:8px;margin-bottom:14px}
+.tabs .tab{flex:1;text-align:center;padding:9px;border-radius:10px;background:var(--bg);cursor:pointer;font-size:13px;font-weight:600;color:var(--text-soft)}
+.tabs .tab.active{background:var(--primary);color:#fff}
+.file-drop{border:1.5px dashed var(--border);border-radius:12px;padding:18px;text-align:center;color:var(--text-soft);font-size:13px;cursor:pointer;transition:border .15s}
+.file-drop:hover{border-color:var(--primary-light)}
+.admin-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.admin-topbar .who{font-size:13px;color:var(--text-soft)}
+.btn-sm{padding:7px 14px;font-size:13px}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <div class="logo"><span class="mark">靓</span> 全国靓号选号系统</div>
+    <nav class="header-nav">
+      <a id="navShow" class="nav-show active">靓号大厅</a>
+      <a id="navAdmin" class="nav-admin">管理后台</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ================= DISPLAY VIEW ================= -->
+<main id="showView">
+  <section class="banner">
+    <h1>全国手机靓号 · 一站选齐</h1>
+    <p>平台担保交易 · 号码资源充足 · 极速交付</p>
+    <div class="badges"><span class="badge">尾号4连</span><span class="badge">顺子号</span><span class="badge">AABB</span><span class="badge">ABAB</span><span class="badge">含888/666</span></div>
+  </section>
+
+  <div class="marquee"><div class="track" id="marqueeTrack"><span>加载中…</span></div></div>
+
+  <div class="container" id="search">
+    <section class="search-section">
+      <div class="search-title">🔍 精准选号（留空表示任意，支持通配 *）</div>
+      <div class="digit-row" id="digitRow"></div>
+      <div class="search-actions">
+        <button class="btn btn-primary" id="searchBtn">搜索靓号</button>
+        <button class="btn btn-ghost" id="resetBtn">重置</button>
+      </div>
+      <div class="search-hint">示例：第 4 位填 8、其余留空 → 匹配 “***8********”；也可直接输入部分号码 / 用 * 占位。</div>
+    </section>
+
+    <div class="filters">
+      <div class="filter-group" id="operatorFilter">
+        <span class="label">运营商</span>
+        <button class="chip active" data-operator="all">全部</button>
+        <button class="chip" data-operator="移动">移动</button>
+        <button class="chip" data-operator="联通">联通</button>
+        <button class="chip" data-operator="电信">电信</button>
+        <button class="chip" data-operator="虚拟运营商">虚拟运营商</button>
+      </div>
+      <div class="filter-group" id="levelFilter">
+        <span class="label">类型</span>
+        <button class="chip active" data-level="all">全部</button>
+        <button class="chip" data-level="靓号">靓号</button>
+        <button class="chip" data-level="普通">普通号</button>
+      </div>
+      <div class="filter-group" style="margin-left:auto">
+        <span class="label">排序</span>
+        <select class="sort-select" id="sortSelect">
+          <option value="new">最新上架</option>
+          <option value="price_desc">价格高→低</option>
+          <option value="price_asc">价格低→高</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid" id="grid"></div>
+    <div class="pagination" id="pagination"></div>
+  </div>
+
+  <footer class="site-footer">
+    <p>© 全国靓号选号系统 · 平台担保交易</p>
+  </footer>
+</main>
+
+<!-- ================= ADMIN VIEW ================= -->
+<main id="adminView" class="hidden">
+  <div class="auth-wrap" id="loginView">
+    <div class="auth-card">
+      <h2>管理员登录</h2>
+      <p class="sub">请输入后台密码以继续（默认 admin888，可在文件顶部修改）</p>
+      <div class="field">
+        <label for="pwd">密码</label>
+        <input type="password" id="pwd" placeholder="请输入密码" autocomplete="current-password" />
+      </div>
+      <button class="btn btn-primary" style="width:100%" id="loginBtn">登录</button>
+      <p class="sub" style="margin-top:14px;font-size:12px;color:#dc2626" id="loginErr"></p>
+    </div>
+  </div>
+
+  <div class="container hidden" id="dashView" style="padding:20px 16px 50px">
+    <div class="admin-topbar">
+      <div class="who">欢迎，管理员 <button class="btn btn-ghost btn-sm" id="logoutBtn" style="margin-left:10px">退出</button></div>
+      <button class="btn btn-ghost btn-sm" id="exportBtn">导出JSON</button>
+      <button class="btn btn-primary btn-sm" id="publishBtn">导出发布版</button>
+    </div>
+
+    <div class="stat-row" id="statRow"></div>
+
+    <div class="admin-layout">
+      <section class="panel">
+        <h3>📥 上传号码</h3>
+        <div class="tabs">
+          <div class="tab active" data-tab="file">文件上传</div>
+          <div class="tab" data-tab="paste">粘贴文本</div>
+          <div class="tab" data-tab="single">单个添加</div>
+        </div>
+        <div class="tab-pane" data-pane="file">
+          <div class="file-drop" id="fileDrop">点击选择 .txt / .csv 文件<br/>每行一个号码，或用逗号分隔：号码,运营商,类型,标签,价格</div>
+          <input type="file" id="fileInput" accept=".txt,.csv,.text" style="display:none" />
+          <p class="sub" style="font-size:12px;margin-top:10px" id="fileInfo"></p>
+          <button class="btn btn-primary" style="width:100%;margin-top:10px" id="uploadFileBtn">上传并导入</button>
+        </div>
+        <div class="tab-pane" data-pane="paste" style="display:none">
+          <div class="field">
+            <label for="pasteArea">号码列表（每行一个；可用逗号分隔字段）</label>
+            <textarea id="pasteArea" placeholder="17088880999&#10;13166668888,联通&#10;18612345678,移动,靓号,顺子号,2000"></textarea>
+          </div>
+          <button class="btn btn-primary" style="width:100%" id="uploadPasteBtn">导入文本</button>
+        </div>
+        <div class="tab-pane" data-pane="single" style="display:none">
+          <div class="field"><label for="sNumber">手机号</label><input id="sNumber" placeholder="11位手机号" inputmode="numeric" /></div>
+          <div class="field">
+            <label for="sOperator">运营商</label>
+            <select id="sOperator"><option value="auto">自动识别</option><option value="移动">移动</option><option value="联通">联通</option><option value="电信">电信</option><option value="虚拟运营商">虚拟运营商</option></select>
+          </div>
+          <div class="field"><label for="sTag">标签（可选）</label><input id="sTag" placeholder="如：尾号8888" /></div>
+          <div class="field"><label for="sPrice">价格（元，可选）</label><input id="sPrice" placeholder="0" inputmode="decimal" /></div>
+          <button class="btn btn-primary" style="width:100%" id="addSingleBtn">添加号码</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h3>📋 号码列表 <span class="count" id="listCount"></span></h3>
+        <div style="overflow-x:auto">
+          <table class="admin-table">
+            <thead><tr><th>号码</th><th>运营商</th><th>标签</th><th>价格</th><th>状态</th><th></th></tr></thead>
+            <tbody id="listBody"></tbody>
+          </table>
+        </div>
+        <div class="pagination" id="adminPagination" style="margin:14px 0 0"></div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+/* ===== 配置 ===== */
+var ADMIN_PASSWORD = "admin888";        // 修改后台密码请改这里
+var STORE_KEY = "phone_numbers_v1";
+
+/* ===== 工具：号段识别 & 靓号分类 ===== */
+function detectOperator(n){
+  var seg=n.slice(0,3),two=n.slice(0,2);
+  if(["13","15","18","14","17","16","19"].indexOf(two)>=0){
+    if(["162","165","167","170","171"].indexOf(seg)>=0)return"虚拟运营商";
+    if(["134","135","136","137","138","139","147","150","151","152","157","158","159","172","178","182","183","184","187","188","198"].indexOf(seg)>=0)return"移动";
+    if(["130","131","132","145","155","156","166","175","176","185","186","196"].indexOf(seg)>=0)return"联通";
+    if(["133","149","153","173","174","177","180","181","189","199"].indexOf(seg)>=0)return"电信";
+  }
+  return"未知";
+}
+function classify(n){
+  var tail=n.slice(-4),d=n.split("").map(Number),tag="",level="普通";
+  if(/(\d)\1{3}$/.test(n)){tag="尾号"+n[n.length-1]+"连";level="靓号";}
+  else if(/(\d)\1{2}$/.test(n.slice(-3))){tag="尾号"+n[n.length-1]+"连";level="靓号";}
+  else if(tail[0]===tail[1]&&tail[2]===tail[3]&&tail[0]!==tail[2]){tag="尾号AABB";level="靓号";}
+  else if(tail[0]===tail[2]&&tail[1]===tail[3]&&tail[0]!==tail[1]){tag="尾号ABAB";level="靓号";}
+  else if(d.slice(-4).every(function(x,i,a){return i===0||x===a[i-1]+1;})){tag="顺子号";level="靓号";}
+  else if(d.slice(-4).every(function(x,i,a){return i===0||x===a[i-1]-1;})){tag="倒顺号";level="靓号";}
+  else if(n.indexOf("888")>=0){tag="含888";level="靓号";}
+  else if(n.indexOf("666")>=0){tag="含666";level="靓号";}
+  return{level:level,tag:tag};
+}
+function normalize(raw){var d=String(raw).replace(/\D/g,"");if(d.length!==11||!d.startsWith("1"))return null;return d;}
+function genId(){return "n_"+Math.random().toString(36).slice(2,10)+Date.now().toString(36);}
+
+/* ===== 存储 ===== */
+var SEED=[
+  {number:"17088880999",price:8800,tag:"尾号4连"},{number:"13166668888",price:12800,tag:"尾号4连"},
+  {number:"18612345678",price:3600,tag:"顺子号"},{number:"18900001111",price:5200,tag:"尾号3连"},
+  {number:"13322223333",price:6800,tag:"AABB"},{number:"19876543210",price:9800,tag:"倒顺号"},
+  {number:"17788889999",price:15800,tag:"尾号4连"},{number:"16512344321",price:1200,tag:"ABAB"},
+  {number:"15011112222",price:4200,tag:"尾号3连"},{number:"18199998888",price:13800,tag:"尾号4连"},
+  {number:"13800001357",price:2600,tag:"普通号"},{number:"16755556666",price:7600,tag:"尾号4连"},
+  {number:"19912349876",price:3200,tag:"倒顺号"},{number:"15566667777",price:11200,tag:"尾号4连"},
+  {number:"13288887777",price:12600,tag:"尾号4连"},{number:"18011112233",price:3900,tag:"AABB"},
+  {number:"17122225555",price:8800,tag:"尾号4连"},{number:"15933334444",price:6400,tag:"尾号4连"},
+  {number:"16244445555",price:5400,tag:"尾号4连"},{number:"13456789876",price:2900,tag:"倒顺号"}
+];
+function loadAll(){
+  try{var a=JSON.parse(localStorage.getItem(STORE_KEY));if(Array.isArray(a))return a;}catch(e){}
+  return null;
+}
+function saveAll(arr){localStorage.setItem(STORE_KEY,JSON.stringify(arr));}
+function ensureSeed(){
+  if(loadAll()===null){
+    var arr=SEED.map(function(s){var c=classify(s.number);return{id:genId(),number:s.number,operator:detectOperator(s.number),level:s.level||c.level,tag:s.tag||c.tag||"普通号",price:s.price||0,status:"available",createdAt:new Date().toISOString()};});
+    saveAll(arr);
+  }
+}
+function getAll(){return loadAll()||[];}
+
+/* ===== 公共 ===== */
+var $=function(s){return document.querySelector(s);};
+function toast(msg,type){var el=$("#toast");el.textContent=msg;el.className="toast show "+(type||"");setTimeout(function(){el.className="toast "+(type||"");},2600);}
+
+/* ===== 视图切换 ===== */
+function showView(v){
+  if(v==="admin"){$("#showView").classList.add("hidden");$("#adminView").classList.remove("hidden");$("#navAdmin").classList.add("active");$("#navShow").classList.remove("active");if(loggedIn()){$("#loginView").classList.add("hidden");$("#dashView").classList.remove("hidden");refresh();}}
+  else{$("#adminView").classList.add("hidden");$("#showView").classList.remove("hidden");$("#navShow").classList.add("active");$("#navAdmin").classList.remove("active");}
+}
+$("#navShow").addEventListener("click",function(){showView("show");});
+$("#navAdmin").addEventListener("click",function(){showView("admin");});
+
+/* ===== 展示页 ===== */
+var dstate={q:"",operator:"all",level:"all",sort:"new",page:1,pageSize:24,totalPages:1};
+var digitRow=$("#digitRow");
+for(var i=0;i<11;i++){var inp=document.createElement("input");inp.maxLength=1;inp.inputMode="numeric";inp.placeholder="*";inp.dataset.idx=i;inp.addEventListener("input",function(){this.value=this.value.replace(/\D/g,"").slice(0,1);});digitRow.appendChild(inp);}
+function collectQuery(){var ds=Array.prototype.slice.call(digitRow.children).map(function(el){return el.value.trim();});var q=ds.map(function(d){return d===""?"*":d;}).join("");return q.replace(/\*/g,"")===""?"":q;}
+function loadMarquee(){var nums=getAll().filter(function(it){return it.status==="available";}).slice(-12).reverse().map(function(it){return it.number;});var track=$("#marqueeTrack");if(!nums.length){track.innerHTML="<span>平台担保交易，安全无忧</span>";return;}var items=nums.map(function(n){return"<span>恭喜 客* 成功下单 "+n.slice(0,3)+"****"+n.slice(7)+"</span>";});track.innerHTML=items.join("")+items.join("");}
+function renderCards(items){var grid=$("#grid");if(!items.length){grid.innerHTML='<div class="empty"><div class="big">📭</div>没有找到匹配的号码，换个条件试试～</div>';return;}grid.innerHTML=items.map(function(it){var premium=it.level==="靓号";var star=premium?'<span class="star">★</span>':"";return'<div class="card '+(premium?"premium":"")+'"><div class="num">'+star+it.number+'</div><div class="meta"><span class="tag op">'+it.operator+'</span><span class="tag level">'+it.tag+'</span></div><div class="footer"><div class="price"><small>¥</small>'+(it.price||"面议")+'</div><span class="status '+(it.status==="available"?"available":"sold")+'">'+(it.status==="available"?"可售":"已售")+'</span></div></div>';}).join("");}
+function renderPagination(elId,total,cur,onPage){var el=$("#"+elId);if(total<=1){el.innerHTML="";return;}var html='<button '+(cur===1?"disabled":"")+' data-page="'+(cur-1)+'">‹</button>';for(var p=1;p<=total;p++){if(p===1||p===total||(p>=cur-2&&p<=cur+2))html+='<button class="'+(p===cur?"active":"")+'" data-page="'+p+'">'+p+'</button>';else if(html.slice(-1)!=="…")html+='<span class="info">…</span>';}html+='<button '+(cur===total?"disabled":"")+' data-page="'+(cur+1)+'">›</button>';if(elId==="pagination")html+='<span class="info">第 '+cur+"/"+total+" 页</span>";el.innerHTML=html;Array.prototype.slice.call(el.querySelectorAll("button[data-page]")).forEach(function(b){b.addEventListener("click",function(){var p=parseInt(b.dataset.page,10);if(p>=1&&p<=total){onPage(p);}});});}
+function loadShow(){var grid=$("#grid");grid.innerHTML='<div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>';var items=getAll();if(dstate.q){var re=new RegExp(dstate.q.replace(/\*/g,".*"));items=items.filter(function(it){return re.test(it.number);});}if(dstate.operator!=="all")items=items.filter(function(it){return it.operator===dstate.operator;});if(dstate.level!=="all")items=items.filter(function(it){return it.level===dstate.level;});if(dstate.sort==="price_desc")items=items.slice().sort(function(a,b){return(b.price||0)-(a.price||0);});else if(dstate.sort==="price_asc")items=items.slice().sort(function(a,b){return(a.price||0)-(b.price||0);});else items=items.slice().sort(function(a,b){return(b.createdAt||"").localeCompare(a.createdAt||"");});var total=items.length,ps=dstate.pageSize,start=(dstate.page-1)*ps;dstate.totalPages=Math.ceil(total/ps)||1;renderCards(items.slice(start,start+ps));renderPagination("pagination",dstate.totalPages,dstate.page,function(p){dstate.page=p;loadShow();});}
+$("#searchBtn").addEventListener("click",function(){dstate.q=collectQuery();dstate.page=1;loadShow();});
+$("#resetBtn").addEventListener("click",function(){Array.prototype.slice.call(digitRow.children).forEach(function(el){el.value="";});dstate.q="";dstate.page=1;loadShow();});
+$("#operatorFilter").addEventListener("click",function(e){var b=e.target.closest(".chip");if(!b)return;$("#operatorFilter").querySelectorAll(".chip").forEach(function(c){c.classList.remove("active");});b.classList.add("active");dstate.operator=b.dataset.operator;dstate.page=1;loadShow();});
+$("#levelFilter").addEventListener("click",function(e){var b=e.target.closest(".chip");if(!b)return;$("#levelFilter").querySelectorAll(".chip").forEach(function(c){c.classList.remove("active");});b.classList.add("active");dstate.level=b.dataset.level;dstate.page=1;loadShow();});
+$("#sortSelect").addEventListener("change",function(e){dstate.sort=e.target.value;dstate.page=1;loadShow();});
+
+/* ===== 后台 ===== */
+var loggedInFlag=false;
+function loggedIn(){return loggedInFlag;}
+$("#loginBtn").addEventListener("click",doLogin);
+$("#pwd").addEventListener("keydown",function(e){if(e.key==="Enter")doLogin();});
+function doLogin(){var pwd=$("#pwd").value;if(pwd!==ADMIN_PASSWORD){$("#loginErr").textContent="密码错误";return;}$("#loginErr").textContent="";loggedInFlag=true;$("#pwd").value="";$("#loginView").classList.add("hidden");$("#dashView").classList.remove("hidden");refresh();}
+$("#logoutBtn").addEventListener("click",function(){loggedInFlag=false;$("#dashView").classList.add("hidden");$("#loginView").classList.remove("hidden");});
+document.querySelectorAll(".tabs .tab").forEach(function(tab){tab.addEventListener("click",function(){document.querySelectorAll(".tabs .tab").forEach(function(t){t.classList.remove("active");});document.querySelectorAll(".tab-pane").forEach(function(p){p.style.display="none";});tab.classList.add("active");document.querySelector('.tab-pane[data-pane="'+tab.dataset.tab+'"]').style.display="block";});});
+var pendingFileText=null;
+$("#fileDrop").addEventListener("click",function(){$("#fileInput").click();});
+$("#fileInput").addEventListener("change",function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){pendingFileText=r.result;$("#fileInfo").textContent="已选择："+f.name+"（"+f.size+" 字节）";};r.readAsText(f,"utf-8");});
+$("#uploadFileBtn").addEventListener("click",function(){if(!pendingFileText){toast("请先选择文件","err");return;}var res=parseBulk(pendingFileText);saveBulk(res);toast("导入成功：新增 "+res.inserted+" 条，跳过 "+res.skipped+" 条"+(res.errors.length?"，失败 "+res.errors.length:""),"ok");pendingFileText=null;$("#fileInfo").textContent="";$("#fileInput").value="";refresh();});
+$("#uploadPasteBtn").addEventListener("click",function(){var c=$("#pasteArea").value;if(!c.trim()){toast("请输入号码","err");return;}var res=parseBulk(c);saveBulk(res);toast("导入成功：新增 "+res.inserted+" 条，跳过 "+res.skipped+" 条","ok");$("#pasteArea").value="";refresh();});
+$("#addSingleBtn").addEventListener("click",function(){var n=$("#sNumber").value.trim();if(!n){toast("请输入手机号","err");return;}var num=normalize(n);if(!num){toast("手机号格式不正确","err");return;}var all=getAll();if(all.some(function(it){return it.number===num})){toast("号码已存在","err");return;}var c=classify(num);all.push({id:genId(),number:num,operator:$("#sOperator").value==="auto"?detectOperator(num):$("#sOperator").value,level:c.level,tag:$("#sTag").value.trim()||c.tag||"普通号",price:Number($("#sPrice").value.trim())||0,status:"available",createdAt:new Date().toISOString()});saveAll(all);toast("添加成功","ok");$("#sNumber").value="";$("#sTag").value="";$("#sPrice").value="";refresh();});
+$("#exportBtn").addEventListener("click",function(){var data=JSON.stringify(getAll(),null,2);var blob=new Blob([data],{type:"application/json"});var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="phone_numbers.json";a.click();toast("已导出","ok");});
+$("#publishBtn").addEventListener("click",function(){
+  var data=getAll();
+  if(!data.length){toast("当前没有号码可发布","err");return;}
+  var html=document.documentElement.outerHTML;
+  var newSeed="var SEED = "+JSON.stringify(data)+";";
+  if(!/var SEED=\[[\s\S]*?\n\];/.test(html)){toast("发布失败：未找到种子数据","err");return;}
+  html=html.replace(/var SEED=\[[\s\S]*?\n\];/,newSeed);
+  html=html.replace(/var STORE_KEY = "[^"]*";/,'var STORE_KEY = "phone_numbers_'+Date.now()+'";');
+  var blob=new Blob([html],{type:"text/html"});var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="index.html";a.click();
+  toast("已生成 index.html（含 "+data.length+" 个号码），部署它即可让所有人看到","ok");
+});
+
+function parseBulk(content){
+  var lines=content.split(/\r?\n/).map(function(l){return l.trim();}).filter(Boolean);
+  var existing=new Set(getAll().map(function(it){return it.number;}));
+  var res={inserted:0,skipped:0,errors:[]},news=[];
+  lines.forEach(function(line){
+    var delim=line.indexOf("\t")>=0?"\t":(line.indexOf("，")>=0?"，":(line.indexOf(",")>=0?",":(line.indexOf(";")>=0?";":null)));
+    var f=delim?line.split(delim).map(function(s){return s.trim();}):[line];
+    var num=normalize(f[0]);if(!num){res.errors.push({line:line,reason:"无法识别为手机号"});return;}
+    if(existing.has(num)){res.skipped++;return;}
+    var c=classify(num);
+    news.push({id:genId(),number:num,operator:(f[1]&&["移动","联通","电信","虚拟运营商"].indexOf(f[1])>=0)?f[1]:detectOperator(num),level:f[2]||c.level,tag:f[3]||c.tag||"普通号",price:Number(f[4])||0,status:"available",createdAt:new Date().toISOString()});
+    existing.add(num);res.inserted++;
+  });
+  return{res:res,news:news};
+}
+function saveBulk(p){if(p.news.length){var all=getAll();all=all.concat(p.news);saveAll(all);}}
+
+var adminPage=1,adminPageSize=20;
+function loadStats(){var s=getAll();var avail=s.filter(function(it){return it.status==="available";}).length;var prem=s.filter(function(it){return it.level==="靓号";}).length;$("#statRow").innerHTML='<div class="stat"><div class="v">'+s.length+'</div><div class="k">号码总数</div></div><div class="stat"><div class="v">'+avail+'</div><div class="k">可售</div></div><div class="stat"><div class="v">'+prem+'</div><div class="k">靓号</div></div>';}
+function loadList(){var s=getAll();$("#listCount").textContent="共 "+s.length+" 条";var totalPages=Math.ceil(s.length/adminPageSize)||1;if(adminPage>totalPages)adminPage=totalPages;var start=(adminPage-1)*adminPageSize;var pageItems=s.slice(start,start+adminPageSize);var body=$("#listBody");if(!pageItems.length){body.innerHTML='<tr><td colspan="6" style="text-align:center;color:#9aa3af;padding:24px">暂无号码，先上传吧</td></tr>';}else{body.innerHTML=pageItems.map(function(it){return'<tr><td class="num">'+it.number+'</td><td>'+it.operator+'</td><td>'+it.tag+'</td><td>'+(it.price?"¥"+it.price:"面议")+'</td><td>'+(it.status==="available"?"可售":"已售")+'</td><td><button class="del" data-id="'+it.id+'">删除</button></td></tr>';}).join("");Array.prototype.slice.call(body.querySelectorAll(".del")).forEach(function(b){b.addEventListener("click",function(){if(!confirm("确定删除该号码？"))return;var all=getAll();var idx=all.findIndex(function(x){return x.id===b.dataset.id;});if(idx>=0){all.splice(idx,1);saveAll(all);toast("已删除","ok");refresh();}});});}renderPagination("adminPagination",totalPages,adminPage,function(p){adminPage=p;loadList();});}
+function refresh(){loadStats();loadList();}
+
+/* ===== 初始化 ===== */
+ensureSeed();
+loadMarquee();
+loadShow();
+if(location.hash==="#admin")showView("admin");
+</script>
+</body>
+</html>
