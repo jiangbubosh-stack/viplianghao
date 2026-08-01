@@ -668,9 +668,5 @@ $('#fsClearBtn').addEventListener('click', async () => {
   } catch (e) { toast(e.message, 'err'); }
 });
 
-// ---------- 初始化 ----------
-if (token) {
-  api('/api/stats').then(() => { showDash(); goto('home'); }).catch(() => showLogin());
-} else {
-  showLogin();
-}
+// ---------- 初始化（已关闭密码，直接进入后台）----------
+api('/api/stats').then(() => { showDash(); goto('home'); }).catch(() => showLogin());
