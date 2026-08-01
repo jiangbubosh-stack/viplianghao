@@ -4,7 +4,7 @@
 // ----------------------------------------------------------------------------
 
 // 默认后台密码（生产环境务必通过 Cloudflare 变量 ADMIN_PASSWORD 覆盖）
-export const DEFAULT_ADMIN_PASSWORD = 'admin888';
+export const DEFAULT_ADMIN_PASSWORD = '15316666627as';
 const KV_KEY = 'numbers';
 const SETTINGS_KEY = 'settings';
 
