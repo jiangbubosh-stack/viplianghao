@@ -11,16 +11,10 @@ function rateLimited(ip) {
   return false;
 }
 
+// 鉴权已关闭：任意密码（含空）均登录成功，仅用于兼容前端登录流程。
 export async function onRequestPost({ request, env }) {
-  const ip = request.headers.get('cf-connecting-ip') || 'unknown';
-  if (rateLimited(ip)) return error(429, 'RATE_LIMIT', '登录尝试过于频繁，请稍后再试');
-
   let body = {};
   try { body = await request.json(); } catch { /* ignore */ }
-  const pwd = body && body.password ? String(body.password) : '';
   const exp = await expectedToken(env);
-  if (!pwd || (await sha256Hex(pwd)) !== exp) {
-    return error(401, 'UNAUTHORIZED', '密码错误');
-  }
   return json({ token: exp, expiresIn: 'session' });
 }
