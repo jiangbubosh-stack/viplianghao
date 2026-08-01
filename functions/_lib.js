@@ -54,11 +54,14 @@ export async function expectedToken(env) {
   return sha256Hex(getAdminPassword(env));
 }
 
+// 鉴权已按站长要求关闭：/admin 直接进入，无需密码。
+// 如需恢复：把本函数改回下方逻辑，并在 Cloudflare 设置 ADMIN_PASSWORD 环境变量。
 export async function authenticate(request, env) {
-  const auth = request.headers.get('Authorization') || '';
-  const token = auth.startsWith('Bearer ') ? auth.slice(7) : '';
-  if (!token) return false;
-  return token === (await expectedToken(env));
+  return true;
+  // const auth = request.headers.get('Authorization') || '';
+  // const token = auth.startsWith('Bearer ') ? auth.slice(7) : '';
+  // if (!token) return false;
+  // return token === (await expectedToken(env));
 }
 
 // ---- 号码工具（与 server.js 保持一致）----
